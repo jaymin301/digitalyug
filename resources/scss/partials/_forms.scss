@@ -1,0 +1,228 @@
+// ─── Form Controls ────────────────────────────────────────
+.form-control,
+.form-select {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #2d3748;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+        border-color: $brand-primary;
+        box-shadow: 0 0 0 3px rgba(108, 63, 197, 0.1);
+        outline: none;
+    }
+
+    &.is-invalid {
+        border-color: $brand-danger;
+        box-shadow: 0 0 0 3px rgba(252, 92, 101, 0.1);
+    }
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+
+    .required {
+        color: $brand-danger;
+        margin-left: 3px;
+    }
+}
+
+// ─── Select2 ─────────────────────────────────────────────
+.select2-container--default {
+
+    .select2-selection--single,
+    .select2-selection--multiple {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        min-height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 8px !important;
+        font-size: 14px;
+    }
+
+    &.select2-container--focus .select2-selection--single,
+    &.select2-container--focus .select2-selection--multiple {
+        border-color: $brand-primary !important;
+        box-shadow: 0 0 0 3px rgba(108, 63, 197, 0.1) !important;
+    }
+
+    .select2-selection--single .select2-selection__rendered {
+        color: #2d3748;
+        line-height: 40px !important;
+    }
+
+    .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 6px;
+    }
+}
+
+.select2-dropdown {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+// ─── Flatpickr ────────────────────────────────────────────
+.flatpickr-calendar {
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.14);
+    border: 1px solid #e2e8f0;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: $brand-primary;
+    border-color: $brand-primary;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: $brand-primary;
+    color: white;
+}
+
+.flatpickr-weekdays {
+    background: $brand-primary;
+}
+
+.flatpickr-weekday {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+// ─── Dynamic Rows ─────────────────────────────────────────
+.dynamic-row {
+    background: #f7f8ff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+
+    .row-number {
+        position: absolute;
+        top: -10px;
+        left: 12px;
+        background: $brand-primary;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+    }
+
+    .btn-remove-row {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(252, 92, 101, 0.1);
+        color: $brand-danger;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.15s;
+
+        &:hover {
+            background: $brand-danger;
+            color: white;
+        }
+    }
+}
+
+.btn-add-row {
+    background: rgba(108, 63, 197, 0.08);
+    color: $brand-primary;
+    border: 1.5px dashed $brand-primary;
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s;
+
+    &:hover {
+        background: rgba(108, 63, 197, 0.15);
+    }
+}
+
+// ─── Buttons ──────────────────────────────────────────────
+.btn {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    transition: all 0.15s;
+
+    &.btn-primary {
+        background: $brand-primary;
+        border-color: $brand-primary;
+        color: white;
+
+        &:hover {
+            background: $brand-primary-dark;
+            border-color: $brand-primary-dark;
+        }
+    }
+
+    &.btn-sm {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+
+    &.btn-lg {
+        padding: 12px 28px;
+        font-size: 15px;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// ─── Progress Bar ─────────────────────────────────────────
+.progress {
+    height: 8px;
+    border-radius: 20px;
+    background: rgba(108, 63, 197, 0.1);
+
+    .progress-bar {
+        border-radius: 20px;
+        background: $brand-primary;
+    }
+
+    &.progress-sm {
+        height: 5px;
+    }
+
+    &.progress-lg {
+        height: 12px;
+    }
+}
+
+// ─── Alert customization ──────────────────────────────────
+.success-alert {
+    background: rgba(38, 222, 129, 0.1);
+    border: 1px solid rgba(38, 222, 129, 0.3);
+    color: darken($brand-accent, 25%);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+
+    i {
+        margin-right: 8px;
+    }
+}

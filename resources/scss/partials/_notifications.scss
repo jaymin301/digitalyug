@@ -1,0 +1,166 @@
+// ─── Notifications Page ───────────────────────────────────
+.notif-page-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: $card-bg;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        border-color: rgba(108, 63, 197, 0.3);
+        box-shadow: 0 2px 12px rgba(108, 63, 197, 0.08);
+        transform: translateY(-1px);
+    }
+
+    &.unread {
+        border-left: 3px solid $brand-primary;
+        background: rgba(108, 63, 197, 0.03);
+    }
+
+    .notif-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+
+        &.concept {
+            background: rgba(69, 170, 242, 0.12);
+            color: $brand-info;
+        }
+
+        &.shoot {
+            background: rgba(247, 183, 49, 0.12);
+            color: darken($brand-secondary, 10%);
+        }
+
+        &.edit {
+            background: rgba(108, 63, 197, 0.12);
+            color: $brand-primary;
+        }
+
+        &.approved {
+            background: rgba(38, 222, 129, 0.12);
+            color: darken($brand-accent, 15%);
+        }
+
+        &.lead {
+            background: rgba(252, 92, 101, 0.12);
+            color: $brand-danger;
+        }
+
+        &.project {
+            background: rgba(108, 63, 197, 0.12);
+            color: $brand-primary;
+        }
+    }
+
+    .notif-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .notif-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .notif-page-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1a1a2e;
+    }
+
+    .notif-time {
+        font-size: 12px;
+        color: #a0aec0;
+    }
+
+    .notif-message {
+        font-size: 13px;
+        color: #718096;
+        line-height: 1.5;
+    }
+
+    .notif-sender {
+        font-size: 11px;
+        color: #a0aec0;
+        margin-top: 4px;
+
+        strong {
+            color: #718096;
+        }
+    }
+
+    .unread-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: $brand-primary;
+        flex-shrink: 0;
+        margin-top: 6px;
+    }
+}
+
+// ─── Dashboard Stats Charts ───────────────────────────────
+.chart-container {
+    position: relative;
+
+    canvas {
+        max-height: 280px;
+    }
+}
+
+// ─── Role Badges ──────────────────────────────────────────
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+
+    &.admin {
+        background: rgba(252, 92, 101, 0.1);
+        color: $brand-danger;
+    }
+
+    &.manager {
+        background: rgba(108, 63, 197, 0.1);
+        color: $brand-primary;
+    }
+
+    &.sales {
+        background: rgba(247, 183, 49, 0.1);
+        color: darken($brand-secondary, 15%);
+    }
+
+    &.concept-writer {
+        background: rgba(69, 170, 242, 0.1);
+        color: $brand-info;
+    }
+
+    &.shooting {
+        background: rgba(38, 222, 129, 0.1);
+        color: darken($brand-accent, 20%);
+    }
+
+    &.video-editor {
+        background: rgba(45, 55, 72, 0.1);
+        color: #4a5568;
+    }
+}

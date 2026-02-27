@@ -1,0 +1,39 @@
+// ─── Brand Colors ──────────────────────────────────────────
+$brand-primary: #6c3fc5;
+$brand-primary-dark: #5432a0;
+$brand-secondary: #f7b731;
+$brand-accent: #26de81;
+$brand-danger: #fc5c65;
+$brand-info: #45aaf2;
+
+// ─── Dark Sidebar Palette ──────────────────────────────────
+$sidebar-bg: #1a1a2e;
+$sidebar-item-hover: #16213e;
+$sidebar-active-bg: rgba(108, 63, 197, 0.25);
+$sidebar-text: rgba(255, 255, 255, 0.75);
+$sidebar-text-active: #ffffff;
+$sidebar-border: rgba(255, 255, 255, 0.08);
+$sidebar-width: 260px;
+$sidebar-width-collapsed: 70px;
+
+// ─── Panel Layout ─────────────────────────────────────────
+$topbar-height: 64px;
+$body-bg: #f0f2f8;
+$card-bg: #ffffff;
+$card-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+$card-radius: 12px;
+
+// ─── Typography ───────────────────────────────────────────
+$font-family-base: 'Inter', 'Segoe UI', sans-serif;
+$font-size-base: 0.875rem; // 14px equivalent
+
+// ─── Bootstrap overrides ──────────────────────────────────
+$primary: $brand-primary;
+$success: $brand-accent;
+$danger: $brand-danger;
+$warning: $brand-secondary;
+$info: $brand-info;
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$btn-border-radius: 8px;
+$input-border-radius: 8px;

@@ -1,0 +1,368 @@
+// ─── Panel Base Layout ─────────────────────────────────────
+html,
+body {
+    height: 100%;
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    background-color: $body-bg;
+    color: #2d3748;
+}
+
+.content-area {
+    margin-left: $sidebar-width;
+    padding-top: $topbar-height;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+
+    &.sidebar-collapsed {
+        margin-left: $sidebar-width-collapsed;
+    }
+
+    @media (max-width: 991.98px) {
+        margin-left: 0 !important;
+    }
+}
+
+.page-content {
+    padding: 24px;
+
+    @media (max-width: 575.98px) {
+        padding: 16px;
+    }
+}
+
+// ─── Cards ────────────────────────────────────────────────
+.panel-card {
+    background: $card-bg;
+    border-radius: $card-radius;
+    box-shadow: $card-shadow;
+    border: none;
+    padding: 24px;
+    margin-bottom: 24px;
+
+    .panel-card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e1e2e;
+        margin-bottom: 0;
+
+        i {
+            color: $brand-primary;
+            margin-right: 8px;
+        }
+    }
+
+    .panel-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+// ─── Stat Cards ───────────────────────────────────────────
+.stat-card {
+    background: $card-bg;
+    border-radius: $card-radius;
+    box-shadow: $card-shadow;
+    border: none;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+
+        &.bg-purple {
+            background: rgba(108, 63, 197, 0.12);
+            color: $brand-primary;
+        }
+
+        &.bg-teal {
+            background: rgba(38, 222, 129, 0.12);
+            color: $brand-accent;
+        }
+
+        &.bg-orange {
+            background: rgba(247, 183, 49, 0.12);
+            color: $brand-secondary;
+        }
+
+        &.bg-red {
+            background: rgba(252, 92, 101, 0.12);
+            color: $brand-danger;
+        }
+
+        &.bg-blue {
+            background: rgba(69, 170, 242, 0.12);
+            color: $brand-info;
+        }
+    }
+
+    .stat-body {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .stat-badge {
+        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+}
+
+// ─── Kanban Board ─────────────────────────────────────────
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+
+    @media (max-width: 575.98px) {
+        grid-template-columns: 1fr;
+    }
+
+    .kanban-col {
+        .kanban-col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: 10px 10px 0 0;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.col-pending {
+                background: #f0f2f8;
+                color: #718096;
+            }
+
+            &.col-concept {
+                background: rgba(69, 170, 242, 0.15);
+                color: $brand-info;
+            }
+
+            &.col-shooting {
+                background: rgba(247, 183, 49, 0.15);
+                color: darken($brand-secondary, 15%);
+            }
+
+            &.col-editing {
+                background: rgba(108, 63, 197, 0.15);
+                color: $brand-primary;
+            }
+
+            &.col-completed {
+                background: rgba(38, 222, 129, 0.15);
+                color: darken($brand-accent, 15%);
+            }
+        }
+
+        .kanban-cards {
+            background: rgba(0, 0, 0, 0.025);
+            border-radius: 0 0 10px 10px;
+            padding: 8px;
+            min-height: 120px;
+
+            .kanban-card {
+                background: $card-bg;
+                border-radius: 8px;
+                padding: 12px 14px;
+                margin-bottom: 8px;
+                border-left: 3px solid $brand-primary;
+                box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+                cursor: pointer;
+                transition: transform 0.15s;
+
+                &:hover {
+                    transform: translateX(3px);
+                }
+
+                .kc-name {
+                    font-weight: 600;
+                    font-size: 13px;
+                    color: #1a1a2e;
+                }
+
+                .kc-meta {
+                    font-size: 11px;
+                    color: #718096;
+                    margin-top: 2px;
+                }
+
+                .kc-progress {
+                    margin-top: 8px;
+                }
+            }
+        }
+    }
+}
+
+// ─── Page Header ──────────────────────────────────────────
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .page-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin: 0;
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 400;
+            display: block;
+            margin-top: 2px;
+        }
+    }
+}
+
+// ─── Global Loader ────────────────────────────────────────
+#global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(3px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    .loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgba(108, 63, 197, 0.2);
+        border-top-color: $brand-primary;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+    p {
+        color: $brand-primary;
+        font-weight: 600;
+        font-size: 13px;
+    }
+}
+
+// ─── Timeline ─────────────────────────────────────────────
+.workflow-timeline {
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e2e8f0;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 52px;
+        margin-bottom: 24px;
+
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+        .timeline-body {
+            background: $card-bg;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: $card-shadow;
+        }
+    }
+}
+
+// ─── Scroll to top ────────────────────────────────────────
+.scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    background: $brand-primary;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(108, 63, 197, 0.4);
+
+    &.visible {
+        opacity: 1;
+    }
+
+    &:hover {
+        background: $brand-primary-dark;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

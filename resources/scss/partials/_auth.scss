@@ -1,0 +1,162 @@
+// ─── Auth Page Styles ──────────────────────────────────────
+.auth-wrapper {
+    min-h-screen: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, $sidebar-bg, $brand-primary-dark);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: $brand-primary;
+        border-radius: 50%;
+        filter: blur(80px);
+        top: -100px;
+        right: -50px;
+        opacity: 0.4;
+        animation: floating 6s ease-in-out infinite;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: $brand-secondary;
+        border-radius: 50%;
+        filter: blur(80px);
+        bottom: -50px;
+        left: -30px;
+        opacity: 0.3;
+        animation: floating 4s ease-in-out infinite reverse;
+    }
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba($brand-primary, 0.5));
+        }
+
+        h3 {
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+    }
+
+    .form-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        padding-left: 15px;
+
+        &:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: $brand-primary;
+            box-shadow: 0 0 0 4px rgba($brand-primary, 0.2);
+            color: #ffffff;
+        }
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+    }
+
+    .btn-login {
+        background: linear-gradient(45deg, $brand-primary, $brand-primary-dark);
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            box-shadow: 0 5px 15px rgba($brand-primary, 0.4);
+            transform: scale(1.02);
+        }
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+
+        a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: $brand-primary;
+            }
+        }
+    }
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+// ─── Animations ───────────────────────────────────────────
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

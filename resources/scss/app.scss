@@ -1,0 +1,25 @@
+// 1. Variables first
+@import 'partials/variables';
+
+// 2. Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// 3. Third-party
+@import 'flatpickr/dist/flatpickr.css';
+@import 'select2/dist/css/select2.min.css';
+@import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+// @import '@fortawesome/fontawesome-free/scss/fontawesome';
+// @import '@fortawesome/fontawesome-free/scss/solid';
+// @import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import 'animate.css/animate.min.css';
+
+// 4. Custom partials
+@import 'partials/layout';
+@import 'partials/sidebar';
+@import 'partials/topbar';
+@import 'partials/dashboard';
+@import 'partials/forms';
+@import 'partials/tables';
+@import 'partials/notifications';
+@import 'partials/auth';
