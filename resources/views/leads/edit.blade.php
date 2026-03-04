@@ -24,6 +24,18 @@
                         <input type="text" id="leadDay" class="form-control" value="{{ $lead->day }}" readonly style="background:#f7f8ff;">
                     </div>
                     <div class="col-md-4">
+                        <label class="form-label">Agency <span class="required">*</span></label>
+                        <select name="agency_id" class="form-select @error('agency_id') is-invalid @enderror" required>
+                            <option value="">Select Agency</option>
+                            @foreach($agencies as $agency)
+                                <option value="{{ $agency->id }}" {{ $lead->agency_id == $agency->id ? 'selected' : '' }}>{{ $agency->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('agency_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-4">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select">
                             @foreach(['new','contacted','confirmed','converted','lost'] as $s)

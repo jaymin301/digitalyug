@@ -38,15 +38,15 @@
             <div class="row mt-4 g-3 text-center">
                 <div class="col-4">
                     <div class="text-muted small mb-1">APPROVED CONCEPTS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->approved_concepts }} / {{ $project->conceptTasks->sum('concepts_required') }}</div>
+                    <div class="h4 fw-bold mb-0">{{ $project->approved_concepts_count }} / {{ $project->conceptTasks->sum('concepts_required') }}</div>
                 </div>
                 <div class="col-4 border-start">
                     <div class="text-muted small mb-1">COMPLETED SHOOTS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->completed_shoots }}</div>
+                    <div class="h4 fw-bold mb-0">{{ $project->completed_shoots_count }}</div>
                 </div>
                 <div class="col-4 border-start">
                     <div class="text-muted small mb-1">APPROVED VIDEOS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->completed_edits }} / {{ $project->editTasks->sum('total_videos') }}</div>
+                    <div class="h4 fw-bold mb-0">{{ $project->completed_edits_count }} / {{ $project->editTasks->sum('total_videos') }}</div>
                 </div>
             </div>
         </div>

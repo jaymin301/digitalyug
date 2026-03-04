@@ -56,7 +56,7 @@
                     </td>
                     <td>
                         <div class="action-btns">
-                            <a href="{{ route('admin.employees.show', $emp) }}" class="btn-action view" title="View"><i class="fa-solid fa-eye"></i></a>
+                            {{-- <a href="{{ route('admin.employees.show', $emp) }}" class="btn-action view" title="View"><i class="fa-solid fa-eye"></i></a> --}}
                             <a href="{{ route('admin.employees.edit', $emp) }}" class="btn-action edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
                             <button class="btn-action toggle"
                                 onclick="toggleStatus({{ $emp->id }}, '{{ $emp->name }}')" title="{{ $emp->is_active ? 'Deactivate' : 'Activate' }}">

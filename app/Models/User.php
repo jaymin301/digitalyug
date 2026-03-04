@@ -21,6 +21,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'is_active',
         'password',
     ];
 
@@ -59,6 +61,20 @@ class User extends Authenticatable
          return $this->roles->first()?->name ?? 'No Role';
     }
 
+    public function conceptTasks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ConceptTask::class, 'assigned_to');
+    }
+
+    public function shootSchedules()
+    {
+        return $this->hasMany(ShootSchedule::class, 'shooting_person_id');
+    }
+
+    public function editTasks()
+    {
+        return $this->hasMany(EditTask::class, 'assigned_to');
+    }
     /**
      * Get the attributes that should be cast.
      *

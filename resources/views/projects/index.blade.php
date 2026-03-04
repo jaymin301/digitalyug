@@ -53,7 +53,15 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('#projectsTable').DataTable({ responsive: true, pageLength: 15, order: [[0, 'asc']] });
+    $('#projectsTable').DataTable({
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search Projects...",
+        },
+        responsive: true, 
+        pageLength: 10,
+        order: [[0, 'asc']]
+    });
 });
 
 function activateProject(id, name) {

@@ -50,13 +50,13 @@
                         <div class="action-btns">
                             <a href="{{ route('leads.show', $lead) }}" class="btn-action view" title="View"><i class="fa-solid fa-eye"></i></a>
                             @role('Admin|Manager|Sales Executive')
-                            <a href="{{ route('leads.edit', $lead) }}" class="btn-action edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                                <a href="{{ route('leads.edit', $lead) }}" class="btn-action edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
                             @endrole
                             @role('Admin|Manager')
-                            @if(!$lead->project && $lead->status === 'converted')
-                            <button class="btn-action approve" onclick="createProject({{ $lead->id }}, '{{ $lead->customer_name }}')" title="Create Project"><i class="fa-solid fa-folder-plus"></i></button>
-                            @endif
-                            <button class="btn-action delete btn-delete" data-url="{{ route('leads.destroy', $lead) }}" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                @if(!$lead->project && $lead->status === 'converted')
+                                    <button class="btn-action approve" onclick="createProject({{ $lead->id }}, '{{ $lead->customer_name }}')" title="Create Project"><i class="fa-solid fa-folder-plus"></i></button>
+                                @endif
+                                <button class="btn-action delete btn-delete" data-url="{{ route('leads.destroy', $lead) }}" title="Delete"><i class="fa-solid fa-trash"></i></button>
                             @endrole
                         </div>
                     </td>
@@ -71,7 +71,16 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('#leadsTable').DataTable({ responsive: true, pageLength: 15, order: [[1,'desc']] });
+    $('#leadsTable').DataTable({ 
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search Leads...",
+        },
+        responsive: true, 
+        pageLength: 10, 
+        ordering: true,
+        order: [[1,'desc']]
+    });
 });
 
 function createProject(leadId, name) {

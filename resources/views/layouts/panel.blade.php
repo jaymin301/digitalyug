@@ -7,6 +7,8 @@
     <title>@yield('title', 'Digital Yug Panel') – Digital Yug</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -44,6 +46,12 @@
                 <a href="{{ route('admin.employees.index') }}" class="nav-link {{ request()->routeIs('admin.employees*') ? 'active' : '' }}">
                     <i class="fa-solid fa-users"></i>
                     <span class="nav-link-text">Employees</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('agencies.index') }}" class="nav-link {{ request()->routeIs('agencies*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-building pe-1"></i>
+                    <span class="nav-link-text">Agencies</span>
                 </a>
             </li>
             @endrole
@@ -113,7 +121,7 @@
         @endrole
 
         {{-- NOTIFICATIONS --}}
-        <div class="sidebar-section-title">Account</div>
+        {{-- <div class="sidebar-section-title">Account</div>
         <ul class="list-unstyled mb-0">
             <li class="nav-item">
                 <a href="{{ route('notifications.index') }}" class="nav-link {{ request()->routeIs('notifications*') ? 'active' : '' }}">
@@ -125,7 +133,7 @@
                     @endif
                 </a>
             </li>
-        </ul>
+        </ul> --}}
     </div>
 
     {{-- Sidebar Footer: Quick User --}}
@@ -300,7 +308,7 @@ function loadNotifications() {
 }
 
 function markRead(id, link) {
-    $.post('{{ url('/notifications') }}/' + id + '/read'}}', function() {
+    $.post(`{{ url('/notifications') }}/${id}/read`, function() {
         loadNotifications();
         if (link) window.location.href = link;
     });
@@ -315,7 +323,7 @@ $('#markAllRead').on('click', function() {
 
 $(document).ready(function() {
     loadNotifications();
-    setInterval(loadNotifications, 30000);
+    // setInterval(loadNotifications, 50000);
 
     // Mobile sidebar
     $('#mobileSidebarToggle').on('click', function() {

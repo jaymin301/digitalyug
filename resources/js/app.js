@@ -22,12 +22,12 @@ window.Swal = Swal;
 
 // DataTables
 import DataTable from 'datatables.net-bs5';
-DataTable(window, $);
+// DataTable(window, $);
 window.DataTable = DataTable;
 
 // Chart.js
-import Chart from 'chart.js/auto';
-window.Chart = Chart;
+// import Chart from 'chart.js/auto';
+// window.Chart = Chart;
 
 // ─── AJAX Global CSRF Setup ─────────────────────────────────────
 $.ajaxSetup({

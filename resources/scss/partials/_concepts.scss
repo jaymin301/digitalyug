@@ -1,0 +1,549 @@
+// Concept Submission View Styles
+.concept-submit-container {
+    padding-bottom: 120px; // Space for sticky footer
+}
+
+// Page Header & Progress Ring
+.concept-header-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid #edf2f7;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .header-left {
+        h1 { font-size: 24px; font-weight: 700; color: #2d3748; margin-bottom: 4px; }
+        p { color: #718096; margin-bottom: 0; font-size: 14px; }
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .progress-stats {
+            text-align: right;
+            .stat-item {
+                font-size: 12px;
+                font-weight: 600;
+                display: block;
+                &.approved { color: #26de81; }
+                &.rejected { color: #eb4d4b; }
+            }
+        }
+    }
+}
+
+.progress-ring-container {
+    position: relative;
+    width: 48px;
+    height: 48px;
+
+    svg {
+        transform: rotate(-90deg);
+        width: 100%;
+        height: 100%;
+
+        circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+
+            &.bg { stroke: #edf2f7; }
+            &.progress {
+                stroke: #6c3fc5;
+                transition: stroke-dashoffset 0.6s ease;
+            }
+        }
+    }
+
+    .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 11px;
+        font-weight: 700;
+        color: #2d3748;
+    }
+}
+
+// Controls
+.concept-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+
+    .count-label { font-size: 14px; font-weight: 600; color: #4a5568; }
+    .control-btns {
+        .btn-text {
+            background: none;
+            border: none;
+            color: #6c3fc5;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 8px;
+            cursor: pointer;
+            &:hover { text-decoration: underline; }
+            &:disabled { color: #a0aec0; cursor: not-allowed; }
+        }
+    }
+}
+
+// Concept Cards
+.concept-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+
+    &:hover { border-color: #cbd5e0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
+    &.status-approved { border-left: 4px solid #26de81; }
+    &.status-rejected { border-left: 4px solid #eb4d4b; }
+    &.status-client_review { border-left: 4px solid #45aaf2; }
+    &.status-draft { border-left: 4px solid #a0aec0; }
+    &.is-new { border-left: 4px solid #f6ad55; }
+
+    .card-header {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+
+        .concept-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 16px;
+            flex-shrink: 0;
+            &.approved { background: #26de81; }
+            &.rejected { background: #eb4d4b; }
+            &.client_review { background: #45aaf2; }
+            &.draft { background: #a0aec0; }
+            &.new { background: #f6ad55; }
+        }
+
+        .concept-info {
+            flex-grow: 1;
+            .title { font-weight: 600; color: #2d3748; display: block; }
+            .sub-label { font-size: 11px; color: #718096; }
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            .chevron { transition: transform 0.2s ease; color: #a0aec0; }
+        }
+    }
+
+    &.open {
+        .card-header .chevron { transform: rotate(180deg); }
+    }
+
+    .card-body-collapse {
+        display: none;
+        border-top: 1px solid #f1f5f9;
+        padding: 24px;
+        background: #fcfcfd;
+    }
+}
+
+// Editable Fields
+.form-group-custom {
+    margin-bottom: 20px;
+    &:last-child { margin-bottom: 0; }
+    label { font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 6px; display: block; }
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 10px 14px;
+        font-size: 14px;
+        &:focus { border-color: #6c3fc5; box-shadow: 0 0 0 3px rgba(108,63,197,0.1); }
+    }
+}
+
+// Read-only view
+.read-only-view {
+    .ro-title { font-weight: 700; font-size: 18px; margin-bottom: 12px; }
+    .ro-description {
+        background: #fff;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #edf2f7;
+        white-space: pre-wrap;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+}
+
+// Feedback boxes
+.feedback-box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    &.rejected { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+    &.suggestion { background: #fffaf0; color: #c05621; border: 1px solid #fbd38d; }
+    &.info { background: #f0f4ff; color: #2c5282; border: 1px solid #c3dafe; }
+    i { margin-top: 3px; }
+}
+
+// Sticky Footer
+.submit-footer {
+    position: fixed;
+    bottom: 0;
+    left: 280px; // Match sidebar width
+    right: 0;
+    background: #fff;
+    padding: 16px 40px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+    border-top: 1px solid #edf2f7;
+    z-index: 1000;
+    transition: left 0.3s ease;
+
+    .footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .badge-row {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        .badge {
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: #edf2f7;
+        border-radius: 10px;
+        overflow: hidden;
+        .fill {
+            height: 100%;
+            background: #6c3fc5;
+            transition: width 0.6s ease;
+        }
+    }
+
+    .action-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .helper-text { font-size: 12px; color: #718096; }
+        .btns {
+            display: flex;
+            gap: 12px;
+        }
+    }
+}
+
+// Sidebar collapsed adjustments
+@media (min-width: 1024px) {
+    body.sidebar-collapsed .submit-footer {
+        left: 80px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .submit-footer {
+        left: 0;
+        padding: 16px 20px;
+    }
+}
+
+// Button styles
+.btn-premium-submit {
+    background: #6c3fc5;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    &:hover { background: #5a32a3; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(108,63,197,0.25); }
+    &:disabled { background: #a0aec0; transform: none; box-shadow: none; cursor:not-allowed; }
+}
+
+.btn-premium-outline {
+    background: #fff;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+    &:hover { background: #f7fafc; border-color: #cbd5e0; }
+}
+
+// ── Concept Overview Page Additions ───────────────────────────
+// Add at bottom of your existing concepts SCSS file
+
+// Stat cards
+.co-stat-card {
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 14px;
+    padding: 16px 18px;
+    height: 100%;
+
+    .co-stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #a0aec0;
+        margin-bottom: 6px;
+    }
+
+    .co-stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .co-stat-bar {
+        height: 4px;
+        background: #f0f2f8;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 4px;
+
+        .co-stat-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+    }
+
+    .co-stat-pct {
+        font-size: 11px;
+        color: #a0aec0;
+    }
+}
+
+// Filter tabs
+.co-filter-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.co-tab {
+    background: none;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #718096;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    &:hover {
+        background: #f7f8ff;
+        color: #6c3fc5;
+    }
+
+    &.active {
+        background: rgba(108, 63, 197, 0.1);
+        color: #6c3fc5;
+        font-weight: 600;
+    }
+}
+
+.co-tab-count {
+    background: rgba(108, 63, 197, 0.1);
+    color: #6c3fc5;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+}
+
+// Ctrl buttons
+.co-ctrl-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #6c3fc5;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.7; }
+}
+
+// Overview concept cards (different from submit cards)
+.co-card {
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 3px 16px rgba(108, 63, 197, 0.07);
+    }
+
+    &.approved { border-left: 4px solid #26de81; }
+    &.rejected  { border-left: 4px solid #eb4d4b; }
+    &.review    { border-left: 4px solid #45aaf2; }
+    &.draft     { border-left: 4px solid #e2e8f0; }
+
+    &.open .co-chevron {
+        transform: rotate(180deg);
+    }
+}
+
+.co-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+    transition: background 0.15s;
+
+    &:hover { background: #fafbff; }
+}
+
+.co-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.co-title-wrap {
+    flex: 1;
+    min-width: 0;
+
+    .co-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: #2d3748;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .co-meta {
+        font-size: 12px;
+        color: #a0aec0;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+}
+
+.co-chevron {
+    font-size: 11px;
+    color: #a0aec0;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.co-card-body {
+    display: none;
+    padding: 0 18px 18px;
+}
+
+.co-script-box {
+    background: #f8f9fb;
+    border: 1px dashed #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+
+    .co-script-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #a0aec0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .co-script-content {
+        font-size: 13.5px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        color: #4a5568;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
+.co-empty-script {
+    font-size: 13px;
+    color: #a0aec0;
+    padding: 12px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.co-info-box {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+
+    &.warning {
+        background: rgba(247, 183, 49, 0.07);
+        border-left: 3px solid #f7b731;
+    }
+
+    &.danger {
+        background: rgba(235, 77, 75, 0.07);
+        border-left: 3px solid #eb4d4b;
+    }
+}

@@ -11,7 +11,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = User::with('roles')->get();
+        $employees = User::with('roles')->orderBy('id', 'desc')->get();
         $roles = Role::all();
         return view('employees.index', compact('employees', 'roles'));
     }
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:10',
             'password' => 'required|min:8|confirmed',
             'role' => 'required|exists:roles,name',
         ]);
