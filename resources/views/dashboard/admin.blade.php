@@ -202,83 +202,83 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Stage doughnut chart
-    const stageCtx = document.getElementById('stageChart').getContext('2d');
-    new Chart(stageCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Pending','Concept','Shooting','Editing','Completed'],
-            datasets: [{
-                data: [{{ $pendingProjects }},{{ $conceptProjects }},{{ $shootingProjects }},{{ $editingProjects }},{{ $completedProjects }}],
-                backgroundColor: ['#718096','#45aaf2','#f7b731','#6c3fc5','#26de81'],
-                borderWidth: 0,
-                hoverOffset: 6
-            }]
-        },
-        options: { cutout: '72%', plugins: { legend: { display: false } } }
-    });
-
-    // Revenue / leads bar+line chart
-    function loadChart(year) {
-        $.getJSON('{{ route('dashboard.stats') }}', function(res) {
-            const labels = res.monthlyRevenue.map(m => m.month);
-            const revenue = res.monthlyRevenue.map(m => m.revenue);
-            const leads = res.monthlyRevenue.map(m => m.leads);
-
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            if (window._revChart) window._revChart.destroy();
-            window._revChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [
-                        {
-                            label: 'Revenue (₹)',
-                            data: revenue,
-                            backgroundColor: 'rgba(108,63,197,0.12)',
-                            borderColor: '#6c3fc5',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Leads',
-                            data: leads,
-                            type: 'line',
-                            borderColor: '#26de81',
-                            backgroundColor: 'rgba(38,222,129,0.08)',
-                            pointBackgroundColor: '#26de81',
-                            pointRadius: 4,
-                            fill: true,
-                            tension: 0.4,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: {
-                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 10, font: { size: 12 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ctx.datasetIndex === 0
-                                    ? ' ₹' + Number(ctx.raw).toLocaleString('en-IN')
-                                    : ' ' + ctx.raw + ' leads'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: { position: 'left', grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '₹' + (v/1000).toFixed(0) + 'k', font: { size: 11 } } },
-                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { font: { size: 11 } } }
-                    }
-                }
-            });
+    $(document).ready(function() {
+        // Stage doughnut chart
+        const stageCtx = document.getElementById('stageChart').getContext('2d');
+        new Chart(stageCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending','Concept','Shooting','Editing','Completed'],
+                datasets: [{
+                    data: [{{ $pendingProjects }},{{ $conceptProjects }},{{ $shootingProjects }},{{ $editingProjects }},{{ $completedProjects }}],
+                    backgroundColor: ['#718096','#45aaf2','#f7b731','#6c3fc5','#26de81'],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: { cutout: '72%', plugins: { legend: { display: false } } }
         });
-    }
 
-    loadChart('{{ now()->year }}');
-});
+        // Revenue / leads bar+line chart
+        function loadChart(year) {
+            $.getJSON('{{ route('dashboard.stats') }}', function(res) {
+                const labels = res.monthlyRevenue.map(m => m.month);
+                const revenue = res.monthlyRevenue.map(m => m.revenue);
+                const leads = res.monthlyRevenue.map(m => m.leads);
+
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                if (window._revChart) window._revChart.destroy();
+                window._revChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [
+                            {
+                                label: 'Revenue (₹)',
+                                data: revenue,
+                                backgroundColor: 'rgba(108,63,197,0.12)',
+                                borderColor: '#6c3fc5',
+                                borderWidth: 2,
+                                borderRadius: 6,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Leads',
+                                data: leads,
+                                type: 'line',
+                                borderColor: '#26de81',
+                                backgroundColor: 'rgba(38,222,129,0.08)',
+                                pointBackgroundColor: '#26de81',
+                                pointRadius: 4,
+                                fill: true,
+                                tension: 0.4,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { intersect: false, mode: 'index' },
+                        plugins: {
+                            legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 10, font: { size: 12 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => ctx.datasetIndex === 0
+                                        ? ' ₹' + Number(ctx.raw).toLocaleString('en-IN')
+                                        : ' ' + ctx.raw + ' leads'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { position: 'left', grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => '₹' + (v/1000).toFixed(0) + 'k', font: { size: 11 } } },
+                            y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { font: { size: 11 } } }
+                        }
+                    }
+                });
+            });
+        }
+
+        loadChart('{{ now()->year }}');
+    });
 </script>
 @endpush

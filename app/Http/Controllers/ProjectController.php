@@ -12,12 +12,13 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        return view('projects.index');
+        $projects = Project::with('manager', 'lead')->latest()->get();
+        return view('projects.index', compact('projects'));
     }
 
     public function show(Project $project)
     {
-        $project->load('manager', 'lead', 'conceptTasks.assignedTo', 'shootSchedules', 'editTasks.assignedTo');
+        $project->load(['manager', 'lead', 'conceptTasks.assignedTo', 'shootSchedules', 'editTasks.assignedTo', 'concepts']);
         return view('projects.show', compact('project'));
     }
 
@@ -43,18 +44,18 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'start_date' => 'required|date',
-            'manager_id' => 'required|exists:users,id',
+            // 'manager_id' => 'required|exists:users,id',
         ]);
 
         $project->update([
             'start_date' => $validated['start_date'],
-            'manager_id' => $validated['manager_id'],
-            'stage' => 'concept_writing',
+            'manager_id' => auth()->id(),
+            'stage' => 'concept',
         ]);
 
         // Notify manager
         PanelNotification::send(
-            $validated['manager_id'],
+            auth()->id(),
             'project_activated',
             'New Project Activated',
             "Project '{$project->name}' has been activated. Please assign concept writers.",
@@ -68,7 +69,7 @@ class ProjectController extends Controller
 
     public function dataTable()
     {
-        $projects = Project::with('manager', 'lead')->latest()->get()->map(function ($p) {
+        $projects = Project::with(['manager', 'lead', 'conceptTasks', 'shootSchedules', 'editTasks', 'concepts'])->latest()->get()->map(function ($p) {
             return [
             'id' => $p->id,
             'name' => $p->name,

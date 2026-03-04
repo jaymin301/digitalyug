@@ -51,27 +51,27 @@
             @endrole
 
             @role('Admin|Manager')
-            @if($editTask->status === 'review')
-            <div class="mt-4 pt-4 border-top">
-                <div class="alert alert-info py-2 small mb-3"><i class="fa-solid fa-circle-info me-2"></i>Review this work and provide feedback.</div>
-                <div class="row g-2">
-                    <div class="col-12 mb-2">
-                        <textarea id="approvalNotes" class="form-control" rows="3" placeholder="Approval notes or Revision feedback..."></textarea>
+                @if($editTask->status === 'review')
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="alert alert-info py-2 small mb-3"><i class="fa-solid fa-circle-info me-2"></i>Review this work and provide feedback.</div>
+                        <div class="row g-2">
+                            <div class="col-12 mb-2">
+                                <textarea id="approvalNotes" class="form-control" rows="3" placeholder="Approval notes or Revision feedback..."></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-success w-100" onclick="approveTask()"><i class="fa-solid fa-check-double me-2"></i>Approve Design</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-danger w-100" onclick="requestRevision()"><i class="fa-solid fa-rotate-left me-2"></i>Request Revision</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-success w-100" onclick="approveTask()"><i class="fa-solid fa-check-double me-2"></i>Approve Design</button>
+                @elseif($editTask->status === 'approved')
+                    <div class="mt-4 p-3 rounded bg-success-light text-center">
+                        <div class="h5 text-success fw-bold mb-1"><i class="fa-solid fa-circle-check me-2"></i>Task Approved</div>
+                        @if($editTask->approvedAt) <div class="small text-muted mb-0">Approved on {{ $editTask->approvedAt->format('d M, h:i A') }} by {{ $editTask->approvedBy->name ?? 'Admin' }}</div> @endif
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-outline-danger w-100" onclick="requestRevision()"><i class="fa-solid fa-rotate-left me-2"></i>Request Revision</button>
-                    </div>
-                </div>
-            </div>
-            @elseif($editTask->status === 'approved')
-            <div class="mt-4 p-3 rounded bg-success-light text-center">
-                <div class="h5 text-success fw-bold mb-1"><i class="fa-solid fa-circle-check me-2"></i>Task Approved</div>
-                @if($editTask->approvedAt) <div class="small text-muted mb-0">Approved on {{ $editTask->approvedAt->format('d M, h:i A') }} by {{ $editTask->approvedBy->name ?? 'Admin' }}</div> @endif
-            </div>
-            @endif
+                @endif
             @endrole
         </div>
 
@@ -163,9 +163,9 @@ function approveTask() {
 }
 
 function requestRevision() {
-    const notes = $('#approvalNotes').val();
+    const notes = $('#approvalNotes').val().trim();
     if(!notes) return Swal.fire('Error', 'Please provide feedback/reasons for revision', 'error');
-    ajaxPost('{{ route('editing.reject', $editTask) }}', { approval_notes: notes }, function(res) {
+    ajaxPost('{{ route('editing.revision', $editTask) }}', { approval_notes: notes }, function(res) {
         showSuccess(res.message);
         setTimeout(() => location.reload(), 1500);
     });

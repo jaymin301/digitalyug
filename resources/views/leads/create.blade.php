@@ -13,7 +13,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-9">
         <div class="panel-card">
-            <form id="leadForm">
+            <form id="leadForm" method="POST">
                 @csrf
                 <div class="row g-3">
                     {{-- Date & Day --}}
@@ -26,8 +26,16 @@
                         <input type="text" id="leadDay" class="form-control" readonly placeholder="Auto-filled" style="background:#f7f8ff;">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Agency</label>
-                        <input type="text" class="form-control" value="Digital Yug" readonly style="background:#f7f8ff;">
+                        <label class="form-label">Agency <span class="required">*</span></label>
+                        <select name="agency_id" class="form-select @error('agency_id') is-invalid @enderror" required>
+                            <option value="">Select Agency</option>
+                            @foreach($agencies as $agency)
+                                <option value="{{ $agency->id }}">{{ $agency->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('agency_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     {{-- Customer details --}}

@@ -12,7 +12,7 @@ class Concept extends Model
     protected $fillable = [
         'concept_task_id', 'project_id', 'title', 'description',
         'client_allocation', 'remarks', 'writer_notes',
-        'status', 'adjustment_suggestion', 'sequence',
+        'status', 'adjustment_suggestion', 'sequence','shoot_id','is_review_reel'
     ];
 
     // ── Relationships ─────────────────────────────────────
@@ -36,6 +36,15 @@ class Concept extends Model
         return $this->hasMany(EditTask::class);
     }
 
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function shootingConcept()
+    {
+        return $this->belongsTo(ShootSchedule::class, 'shoot_id');
+    }
     public function getStatusBadgeAttribute(): string
     {
         return match ($this->status) {

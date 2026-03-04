@@ -9,11 +9,20 @@ use App\Http\Controllers\ShootController;
 use App\Http\Controllers\EditingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // ── Root redirect ──────────────────────────────────────────
 Route::get('/', fn() => redirect()->route('login'));
+
+// ── Public Client Routes (no auth needed) ─────────────────
+Route::get('/client/concepts/{token}', [ConceptController::class, 'clientView'])
+    ->name('concepts.client-view');
+Route::post('/client/concepts/{token}/approve/{concept}', [ConceptController::class, 'clientApprove'])
+    ->name('concepts.client-approve');
+Route::post('/client/concepts/{token}/reject/{concept}', [ConceptController::class, 'clientReject'])
+    ->name('concepts.client-reject');
 
 // ── Authenticated Dashboard ────────────────────────────────
 Route::middleware(['auth'])->group(function () {
@@ -25,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class , 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class , 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class , 'destroy'])->name('profile.destroy');
+
+    // ── Agencies ──────────────────────────────────────────
+    Route::resource('agencies', AgencyController::class);
 
     // ── Notifications ─────────────────────────────────────
     Route::group(['prefix' => 'notifications', 'as' => 'notifications.'], function () {
@@ -62,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{project}', [ProjectController::class , 'show'])->name('show');
             Route::post('/from-lead/{lead}', [ProjectController::class , 'createFromLead'])->name('create-from-lead');
             Route::post('/{project}/activate', [ProjectController::class , 'activate'])->name('activate');
+            Route::delete('/{project}', [ProjectController::class , 'destroy'])->name('destroy');
             Route::get('/data/table', [ProjectController::class , 'dataTable'])->name('data');
         }
         );
@@ -77,7 +90,10 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{concept}/approve', [ConceptController::class , 'approve'])->name('approve');
             Route::post('/{concept}/reject', [ConceptController::class , 'reject'])->name('reject');
             Route::post('/{concept}/client-review', [ConceptController::class , 'sendToClientReview'])->name('client-review');
+            Route::delete('/{concept}', [ConceptController::class , 'destroy'])->name('destroy');
             Route::get('/data/table', [ConceptController::class , 'dataTable'])->name('data');
+            
+            Route::post('/{conceptTask}/generate-link', [ConceptController::class, 'generateClientLink'])->name('generate-link');
         }
         );
 
@@ -90,7 +106,10 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{shoot}/checkin', [ShootController::class , 'checkin'])->name('checkin');
             Route::post('/{shoot}/checkout', [ShootController::class , 'checkout'])->name('checkout');
             Route::post('/{shoot}/suggest', [ShootController::class , 'suggestAdjustment'])->name('suggest');
+            Route::delete('/{shoot}', [ShootController::class , 'destroy'])->name('destroy');
             Route::get('/data/table', [ShootController::class , 'dataTable'])->name('data');
+            
+            // Route::post('/{shoot}/suggest-adjustment', [ShootController::class, 'suggestAdjustment'])->name('suggest-adjustment');
         }
         );
 
@@ -103,6 +122,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{editTask}/update-count', [EditingController::class , 'updateCount'])->name('update-count');
             Route::post('/{editTask}/approve', [EditingController::class , 'approve'])->name('approve');
             Route::post('/{editTask}/revision', [EditingController::class , 'requestRevision'])->name('revision');
+            Route::delete('/{editTask}', [EditingController::class , 'destroy'])->name('destroy');
             Route::get('/data/table', [EditingController::class , 'dataTable'])->name('data');
         }
         );

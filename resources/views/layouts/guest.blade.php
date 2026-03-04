@@ -19,7 +19,7 @@
     <div class="auth-wrapper">
         <div class="auth-card fade-in-up">
             <div class="auth-header">
-                <img src="{{ asset('images/logo-white.png') }}" alt="Digital Yug" class="auth-logo" onerror="this.src='{{ asset('logo.webp') }}'">
+                <img src="{{ asset('logo.webp') }}" alt="Digital Yug" class="auth-logo" onerror="this.src='{{ asset('logo.webp') }}'">
                 <h3>Digital Yug</h3>
                 <p>Employee Management Panel</p>
             </div>

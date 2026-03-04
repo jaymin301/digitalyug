@@ -24,16 +24,16 @@ class DashboardController extends Controller
             return view('dashboard.manager', $data);
         }
         if ($user->hasRole('Sales Executive')) {
-            return view('dashboard.sales', ['myLeads' => Lead::where('created_by', $user->id)->latest()->take(5)->get()]);
+            return view('dashboard.sales_dashboard', ['myLeads' => Lead::where('created_by', $user->id)->latest()->take(5)->get()]);
         }
         if ($user->hasRole('Concept Writer')) {
             return view('dashboard.concept', ['myTasks' => $user->conceptTasks()->with('project')->latest()->take(5)->get()]);
         }
         if ($user->hasRole('Shooting Person')) {
-            return view('dashboard.shooting', ['myShoots' => $user->shootSchedules()->with('project')->latest()->take(5)->get()]);
+            return view('dashboard.shooting_dashboard', ['myShoots' => $user->shootSchedules()->with('project')->latest()->take(5)->get()]);
         }
         if ($user->hasRole('Video Editor')) {
-            return view('dashboard.editor', ['myEdits' => $user->editTasks()->with('project')->latest()->take(5)->get()]);
+            return view('dashboard.editor_dashboard', ['myEdits' => $user->editTasks()->with('project')->latest()->take(5)->get()]);
         }
 
         return view('dashboard.admin', $data);
@@ -41,7 +41,7 @@ class DashboardController extends Controller
 
     private function getStats(): array
     {
-        $projects = Project::with('lead')->get();
+        $projects = Project::with(['manager', 'lead', 'conceptTasks', 'shootSchedules', 'editTasks', 'concepts'])->get();
         return [
             'totalLeads' => Lead::count(),
             'newLeads' => Lead::where('status', 'new')->count(),

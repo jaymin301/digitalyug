@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Agency;
 use App\Models\Concept;
 use App\Models\ConceptTask;
 use App\Models\EditTask;
@@ -19,6 +20,13 @@ class DummyDataSeeder extends Seeder
 {
     public function run(): void
     {
+        // ── 0. Create Agencies ──────────────────────────────────
+        $agencies = [
+            Agency::create(['name' => 'Digital Yug', 'owner_name' => 'Ravi Patel', 'contact' => '9876543210', 'remark' => 'Main Agency']),
+            Agency::create(['name' => 'Creative Ads', 'owner_name' => 'Suresh Raina', 'contact' => '9812345678', 'remark' => 'Partner for social media ads']),
+            Agency::create(['name' => 'Blue Sky Marketing', 'owner_name' => 'Vijay Singh', 'contact' => '9834567890', 'remark' => 'Specializes in real estate marketing']),
+        ];
+
         // ── 1. Create Users ────────────────────────────────────
         $admin = User::create([
             'name' => 'Ravi Patel',
@@ -245,8 +253,12 @@ class DummyDataSeeder extends Seeder
         ];
 
         $leads = [];
-        foreach ($leadsData as $data) {
-            $leads[] = Lead::create(array_merge($data, ['agency_name' => 'Digital Yug']));
+        foreach ($leadsData as $i => $data) {
+            $agency = $agencies[$i % count($agencies)];
+            $leads[] = Lead::create(array_merge($data, [
+                'agency_name' => $agency->name,
+                'agency_id' => $agency->id
+            ]));
         }
 
         // ── 3. Create Projects from Converted Leads ────────────

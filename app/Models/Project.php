@@ -23,6 +23,13 @@ class Project extends Model
         'end_date' => 'date',
     ];
 
+    protected $appends = [
+        'approved_concepts_count',
+        'completed_shoots_count',
+        'completed_edits_count',
+        'progress_percent'
+    ];
+
     // Auto end_date = start_date + 1 month
     protected static function boot()
     {
@@ -83,9 +90,35 @@ class Project extends Model
             };
     }
 
+    public function getApprovedConceptsCountAttribute(): int
+    {
+        return $this->concepts()->where('status', 'approved')->count();
+    }
+
+    public function getCompletedShootsCountAttribute(): int
+    {
+        return $this->shootSchedules()->where('status', 'completed')->count();
+    }
+
+    public function getCompletedEditsCountAttribute(): int
+    {
+        return $this->editTasks()->where('status', 'approved')->sum('completed_count');
+    }
+
     public function getProgressPercentAttribute(): int
     {
-        $stages = ['pending' => 0, 'concept' => 25, 'shooting' => 50, 'editing' => 75, 'completed' => 100];
-        return $stages[$this->stage] ?? 0;
+        $totalConcepts = $this->conceptTasks()->sum('concepts_required') ?: 1;
+        $totalEdits = $this->editTasks()->sum('total_videos') ?: 1;
+
+        $conceptProgress = ($this->approved_concepts_count / $totalConcepts) * 33.33;
+        $shootProgress = ($this->completed_shoots_count / (max(1, $this->shootSchedules()->count()))) * 33.33;
+        $editProgress = ($this->completed_edits_count / $totalEdits) * 33.33;
+
+        $totalProgress = $conceptProgress + $shootProgress + $editProgress;
+
+        if ($this->stage === 'completed')
+            return 100;
+
+        return (int)min(100, round($totalProgress));
     }
 }

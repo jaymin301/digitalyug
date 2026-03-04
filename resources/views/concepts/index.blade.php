@@ -32,9 +32,9 @@
                         <div class="action-btns">
                             @role('Concept Writer')
                                 <a href="{{ route('concepts.submit-form', $t) }}" class="btn-action edit" title="Submit Concepts"><i class="fa-solid fa-pen-nib"></i></a>
-                            @else
-                                <a href="{{ route('concepts.project', $t->project_id) }}" class="btn-action view" title="Review"><i class="fa-solid fa-magnifying-glass"></i></a>
                             @endrole
+                                <a href="{{ route('concepts.project', $t->project_id) }}" class="btn-action view" title="Review"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            {{-- @endrole --}}
                         </div>
                     </td>
                 </tr>
@@ -48,7 +48,15 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('#conceptsTable').DataTable({ responsive: true, pageLength: 15 });
+    $('#conceptsTable').DataTable({ 
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search Concepts...",
+        },
+        responsive: true,
+        pageLength: 10,
+
+    });
 });
 </script>
 @endpush

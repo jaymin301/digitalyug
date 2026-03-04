@@ -11,11 +11,12 @@ class ConceptTask extends Model
 
     protected $fillable = [
         'project_id', 'assigned_to', 'assigned_by',
-        'concepts_required', 'general_remarks', 'status', 'due_date',
+        'concepts_required', 'general_remarks', 'status', 'due_date','client_token','client_token_expires_at'
     ];
 
     protected $casts = [
         'due_date' => 'datetime',
+        'client_token_expires_at' => 'datetime',
     ];
 
     // ── Relationships ─────────────────────────────────────
@@ -36,7 +37,7 @@ class ConceptTask extends Model
 
     public function concepts()
     {
-        return $this->hasMany(Concept::class);
+        return $this->hasMany(Concept::class,'concept_task_id');
     }
 
     public function getStatusBadgeAttribute(): string

@@ -45,14 +45,15 @@ class ShootSchedule extends Model
 
     public function conceptLinks()
     {
-        return $this->hasMany(ShootConceptLink::class);
+        return $this->hasMany(ShootConceptLink::class, 'shoot_schedule_id');
     }
 
     public function concepts()
     {
-        return $this->belongsToMany(Concept::class , 'shoot_concept_links')
-            ->withPivot('is_shot')
-            ->withTimestamps();
+        return $this->belongsToMany(Concept::class, 'shoot_concept_links', 'shoot_schedule_id', 'concept_id');
+        // return $this->belongsToMany(Concept::class , 'shoot_concept_links')
+        //     ->withPivot('is_shot')
+        //     ->withTimestamps();
     }
 
     public function editTasks()

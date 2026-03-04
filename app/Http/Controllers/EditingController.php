@@ -103,8 +103,6 @@ class EditingController extends Controller
             'approved_by' => auth()->id(),
         ]);
 
-        $editTask->project->increment('completed_edits');
-
         PanelNotification::send($editTask->assigned_to, 'edit_approved', 'Editing Approved!', "Your edit '{$editTask->title}' has been approved. Great work!", route('editing.show', $editTask), auth()->id(), $editTask);
 
         return response()->json(['success' => true, 'message' => 'Edit task approved!']);
@@ -126,7 +124,10 @@ class EditingController extends Controller
 
     public function dataTable()
     {
-        $tasks = EditTask::with('project', 'assignedTo')->latest()->get()->map(function ($t) {
+        $tasks = EditTask::with('project', 'assignedTo')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($t) {
             return [
             'id' => $t->id,
             'title' => $t->title,

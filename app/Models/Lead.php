@@ -11,7 +11,7 @@ class Lead extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date', 'day', 'agency_name', 'customer_name', 'contact_number',
+        'date', 'day', 'agency_name', 'agency_id', 'customer_name', 'contact_number',
         'total_reels', 'total_posts', 'total_meta_budget',
         'client_meta_budget', 'dy_meta_budget', 'notes',
         'status', 'created_by', 'updated_by',
@@ -39,6 +39,11 @@ class Lead extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class , 'created_by');
+    }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
     }
 
     public function updatedBy()
