@@ -75,6 +75,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(EditTask::class, 'assigned_to');
     }
+
+    public function leads()
+    {
+        return $this->hasMany(Lead::class, 'created_by');
+    }
     /**
      * Get the attributes that should be cast.
      *

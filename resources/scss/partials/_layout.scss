@@ -20,6 +20,7 @@ body {
 
     @media (max-width: 991.98px) {
         margin-left: 0 !important;
+        padding-top: $topbar-height;
     }
 }
 
@@ -269,6 +270,8 @@ body {
     justify-content: center;
 
     .loader-inner {
+        top: 50vh;
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -358,6 +361,105 @@ body {
 
     &:hover {
         background: $brand-primary-dark;
+    }
+}
+
+// ─── Journey Progress ─────────────────────────────────────
+.pipeline-journey {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    padding: 10px 0;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 30px;
+        left: 20px;
+        right: 20px;
+        height: 3px;
+        background: #e2e8f0;
+        z-index: 0;
+    }
+
+    .journey-step {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-width: 80px;
+
+        .step-icon {
+            width: 42px;
+            height: 42px;
+            background: #fff;
+            border: 3px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #a0aec0;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        &.active {
+            .step-icon {
+                border-color: $brand-primary;
+                color: $brand-primary;
+                box-shadow: 0 0 15px rgba(108, 63, 197, 0.2);
+            }
+
+            .step-label {
+                color: $brand-primary;
+            }
+        }
+
+        &.completed {
+            .step-icon {
+                background: $brand-primary;
+                border-color: $brand-primary;
+                color: white;
+            }
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        &::before {
+            display: none;
+        }
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+
+        .journey-step {
+            flex-direction: row;
+            gap: 12px;
+            text-align: left;
+            width: 100%;
+
+            .step-icon {
+                margin-bottom: 0;
+            }
+
+            .step-label {
+                font-size: 12px;
+            }
+        }
     }
 }
 

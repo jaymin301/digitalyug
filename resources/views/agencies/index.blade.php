@@ -37,14 +37,14 @@
                         <td>
                             <span class="text-muted small">{{ Str::limit($agency->remark, 50) ?: '--' }}</span>
                         </td>
-                        <td class="text-end pe-3">
+                        <td class="text-end pe-3 action-btns">
                             <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('agencies.edit', $agency) }}" class="btn btn-sm btn-light-primary" title="Edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
+                                <a href="{{ route('agencies.edit', $agency) }}" class="btn-action edit" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
                                 </a>
-                                <button type="button" class="btn btn-sm btn-light-danger btn-delete" 
+                                <button type="button" class="btn-action delete btn-delete" 
                                         data-url="{{ route('agencies.destroy', $agency) }}" title="Delete">
-                                    <i class="fa-solid fa-trash-can"></i>
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -65,6 +65,7 @@
                 search: "_INPUT_",
                 searchPlaceholder: "Search agencies...",
             },
+            responsive: true,
             pageLength: 10,
             ordering: true,
             columnDefs: [

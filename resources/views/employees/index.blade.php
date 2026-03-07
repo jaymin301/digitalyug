@@ -78,7 +78,16 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('#employeesTable').DataTable({ responsive: true, pageLength: 15, order: [[0, 'asc']] });
+    $('#employeesTable').DataTable({ 
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search Employee...",
+        },
+        responsive: true,
+        pageLength: 10,
+        order: [[0, 'asc']]
+
+    });
 });
 
 function toggleStatus(id, name) {

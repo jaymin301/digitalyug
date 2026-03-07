@@ -26,27 +26,54 @@
 
 <div class="row g-4">
     <div class="col-lg-8">
-        {{-- Project Progress --}}
+        {{-- Project Pipeline Journey --}}
         <div class="panel-card mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="panel-card-title"><i class="fa-solid fa-chart-line"></i> Campaign Progress</h5>
-                <span class="fw-bold text-primary">{{ $project->progress_percent }}% Complete</span>
+            <h5 class="panel-card-title mb-4"><i class="fa-solid fa-route"></i> Project Journey</h5>
+            <div class="pipeline-journey d-flex justify-content-between mb-4 flex-wrap gap-3">
+                @php
+                    $stages = [
+                        ['id' => 'pending', 'label' => 'Lead Converted', 'icon' => 'fa-handshake'],
+                        ['id' => 'concept', 'label' => 'Concepts', 'icon' => 'fa-lightbulb'],
+                        ['id' => 'shooting', 'label' => 'Shooting', 'icon' => 'fa-camera'],
+                        ['id' => 'editing', 'label' => 'Editing', 'icon' => 'fa-film'],
+                        ['id' => 'completed', 'label' => 'Final Approval', 'icon' => 'fa-check-double'],
+                    ];
+                    $currentStageFound = false;
+                    $stageIndex = 0;
+                    foreach($stages as $i => $s) { if($s['id'] == $project->stage) $stageIndex = $i; }
+                @endphp
+                @foreach($stages as $i => $s)
+                    <div class="journey-step {{ $i <= $stageIndex ? 'active' : '' }} {{ $i < $stageIndex ? 'completed' : '' }}">
+                        <div class="step-icon"><i class="fa-solid {{ $s['icon'] }}"></i></div>
+                        <div class="step-label">{{ $s['label'] }}</div>
+                    </div>
+                @endforeach
             </div>
-            <div class="progress progress-lg">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small text-muted fw-bold">OVERALL PROGRESS</span>
+                <span class="fw-bold text-primary">{{ $project->progress_percent }}%</span>
+            </div>
+            <div class="progress progress-lg mb-4" style="height: 10px; border-radius: 20px;">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:{{ $project->progress_percent }}%"></div>
             </div>
-            <div class="row mt-4 g-3 text-center">
+
+            <div class="row g-3 text-center">
                 <div class="col-4">
-                    <div class="text-muted small mb-1">APPROVED CONCEPTS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->approved_concepts_count }} / {{ $project->conceptTasks->sum('concepts_required') }}</div>
+                    <div class="text-muted small mb-1">CONCEPTS</div>
+                    <div class="h5 fw-bold mb-0">
+                        {{ $project->approved_concepts_count }} / {{ $project->conceptTasks->sum('concepts_required') ?: $project->lead->total_reels }}
+                    </div>
                 </div>
                 <div class="col-4 border-start">
-                    <div class="text-muted small mb-1">COMPLETED SHOOTS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->completed_shoots_count }}</div>
+                    <div class="text-muted small mb-1">SHOOTS</div>
+                    <div class="h5 fw-bold mb-0">{{ $project->completed_shoots_count }} / {{ max(1, $project->shootSchedules->count()) }}</div>
                 </div>
                 <div class="col-4 border-start">
-                    <div class="text-muted small mb-1">APPROVED VIDEOS</div>
-                    <div class="h4 fw-bold mb-0">{{ $project->completed_edits_count }} / {{ $project->editTasks->sum('total_videos') }}</div>
+                    <div class="text-muted small mb-1">VIDEOS</div>
+                    <div class="h5 fw-bold mb-0">
+                        {{ $project->completed_edits_count }} / {{ $project->editTasks->sum('total_videos') ?: $project->lead->total_reels }}
+                    </div>
                 </div>
             </div>
         </div>
