@@ -14,10 +14,10 @@
         <div class="panel-card p-0 overflow-hidden">
             <div class="list-group list-group-flush" id="notificationList">
                 @forelse($notifications as $n)
-                <div class="list-group-item list-group-item-action p-4 border-bottom {{ $n->read_at ? 'bg-white opacity-75' : 'bg-light-purple border-start border-4 border-purple' }}" id="notif_{{ $n->id }}">
+                <div class="list-group-item list-group-item-action p-4 border-bottom {{ $n->is_read ? 'bg-white opacity-75' : 'bg-light-purple border-start border-4 border-purple' }}" id="notif_{{ $n->id }}">
                     <div class="d-flex w-100 justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="stat-icon {{ $n->read_at ? 'bg-secondary' : 'bg-purple' }} shadow-sm" style="width:40px;height:40px;">
+                            <div class="stat-icon {{ $n->is_read ? 'bg-secondary' : 'bg-purple' }} shadow-sm" style="width:40px;height:40px;">
                                 <i class="fa-solid {{ $n->icon ?? 'fa-bell' }}" style="font-size:16px;"></i>
                             </div>
                             <div>
@@ -30,7 +30,7 @@
                             @if($n->link)
                             <a href="{{ $n->link }}" class="btn btn-sm btn-primary rounded-pill px-3">View</a>
                             @endif
-                            @if(!$n->read_at)
+                            @if(!$n->is_read)
                             <button class="btn btn-link btn-sm text-secondary p-0" onclick="markAsRead({{ $n->id }})">Mark read</button>
                             @endif
                         </div>
@@ -63,7 +63,7 @@ function markAsRead(id) {
     });
 }
 function markAllRead() {
-    ajaxPost('/notifications/mark-all-read', {}, function(res) {
+    ajaxPost('/notifications/read-all', {}, function(res) {
         showSuccess(res.message);
         setTimeout(() => location.reload(), 1000);
     });

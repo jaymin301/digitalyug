@@ -107,17 +107,33 @@ class Project extends Model
 
     public function getProgressPercentAttribute(): int
     {
-        $totalConcepts = $this->conceptTasks()->sum('concepts_required') ?: 1;
-        $totalEdits = $this->editTasks()->sum('total_videos') ?: 1;
+        // Use total_reels from lead as the target if no concept tasks are set
+        $targetReels = $this->lead->total_reels ?: 1;
 
-        $conceptProgress = ($this->approved_concepts_count / $totalConcepts) * 33.33;
-        $shootProgress = ($this->completed_shoots_count / (max(1, $this->shootSchedules()->count()))) * 33.33;
-        $editProgress = ($this->completed_edits_count / $totalEdits) * 33.33;
+        $totalConceptsTarget = $this->conceptTasks()->sum('concepts_required') ?: $targetReels;
+        $totalEditsTarget = $this->editTasks()->sum('total_videos') ?: $targetReels;
+
+        // Stage-wise weightage: 
+        // Concepts: 30%, Shooting: 35%, Editing: 35%
+
+        $conceptProgress = ($this->approved_concepts_count / $totalConceptsTarget) * 30;
+
+        // Shoot progress calculation refinement
+        $shootCount = $this->shootSchedules()->count();
+        $shootProgress = ($shootCount > 0)
+            ? ($this->completed_shoots_count / $shootCount) * 35
+            : 0;
+
+        $editProgress = ($this->completed_edits_count / $totalEditsTarget) * 35;
 
         $totalProgress = $conceptProgress + $shootProgress + $editProgress;
 
         if ($this->stage === 'completed')
             return 100;
+
+        // If stage is pending, it should be very low (e.g., 2% for lead conversion)
+        if ($this->stage === 'pending')
+            return 2;
 
         return (int)min(100, round($totalProgress));
     }

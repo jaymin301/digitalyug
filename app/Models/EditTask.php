@@ -26,14 +26,13 @@ class EditTask extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function concept()
+    public function concepts()
     {
-        return $this->belongsTo(Concept::class);
+        return $this->belongsToMany(Concept::class, 'edit_task_concept');
     }
-
     public function shootSchedule()
     {
-        return $this->belongsTo(ShootSchedule::class);
+        return $this->belongsTo(ShootSchedule::class,'shoot_schedule_id');
     }
 
     public function assignedTo()
@@ -58,7 +57,17 @@ class EditTask extends Model
             return 0;
         return (int)round(($this->completed_count / $this->total_videos) * 100);
     }
+    
+    public function videoEntries()
+    {
+        return $this->hasMany(EditTaskVideo::class);
+    }
 
+    // Override completed_count to use actual video records
+    public function getCompletedCountAttribute(): int
+    {
+        return $this->videoEntries()->where('status', 'completed')->count();
+    }
     public function getStatusBadgeAttribute(): string
     {
         return match ($this->status) {

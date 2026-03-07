@@ -26,10 +26,10 @@ class ReportController extends Controller
                 'month' => $date->format('M'),
                 'total_leads' => Lead::whereYear('date', $year)->whereMonth('date', $m)->count(),
                 'converted_leads' => Lead::whereYear('date', $year)->whereMonth('date', $m)->where('status', 'converted')->count(),
-                'revenue' => Lead::whereYear('date', $year)->whereMonth('date', $m)->where('status', 'converted')->sum('total_meta_budget'),
+                // 'revenue' => Lead::whereYear('date', $year)->whereMonth('date', $m)->where('status', 'converted')->sum('total_meta_budget'),
                 'completed_projects' => Project::whereYear('created_at', $year)->whereMonth('created_at', $m)->where('stage', 'completed')->count(),
                 'active_projects' => Project::whereYear('created_at', $year)->whereMonth('created_at', $m)->whereNotIn('stage', ['completed', 'pending'])->count(),
-                'edits_approved' => EditTask::whereYear('approved_at', $year)->whereMonth('approved_at', $m)->where('status', 'approved')->count(),
+                // 'edits_approved' => EditTask::whereYear('approved_at', $year)->whereMonth('approved_at', $m)->where('status', 'approved')->count(),
             ];
         }
 

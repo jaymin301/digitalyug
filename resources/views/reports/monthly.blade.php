@@ -42,13 +42,13 @@
                 <div class="stat-label">Total Conversions</div>
             </div>
         </div>
-        <div class="stat-card">
+        {{-- <div class="stat-card">
             <div class="stat-icon bg-orange"><i class="fa-solid fa-indian-rupee-sign"></i></div>
             <div class="stat-body">
                 <div class="stat-value" id="totalRevenue">₹0</div>
                 <div class="stat-label">Total Revenue</div>
             </div>
-        </div>
+        </div> --}}
         <div class="stat-card">
             <div class="stat-icon bg-blue"><i class="fa-solid fa-circle-check"></i></div>
             <div class="stat-body">
@@ -59,7 +59,7 @@
     </div>
 
     {{-- Monthly Trends Chart --}}
-    <div class="row g-4 mb-4">
+    {{-- <div class="row g-4 mb-4">
         <div class="col-12">
             <div class="panel-card">
                 <div class="panel-card-header">
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     {{-- Detailed Stats Table --}}
     <div class="row g-4">
@@ -87,10 +87,10 @@
                                 <th>Total Leads</th>
                                 <th>Conversions</th>
                                 <th>Conv. Rate</th>
-                                <th>Revenue (₹)</th>
+                                {{-- <th>Meta Spend (₹)</th> --}}
                                 <th>Active Projects</th>
                                 <th>Completed</th>
-                                <th>Edits Approved</th>
+                                {{-- <th>Video Edits Approved</th> --}}
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
@@ -135,104 +135,104 @@ $(document).ready(function() {
                         <td>${m.total_leads}</td>
                         <td class="text-success">${m.converted_leads}</td>
                         <td><span class="badge rounded-pill bg-light text-dark">${convRate}%</span></td>
-                        <td class="fw-bold">${formatCurrency(m.revenue)}</td>
+                       
                         <td>${m.active_projects}</td>
                         <td>${m.completed_projects}</td>
-                        <td>${m.edits_approved}</td>
+                        
                     </tr>
                 `;
             });
             $('#reportTableBody').html(tableHtml);
-
+//  <td class="fw-bold">${formatCurrency(m.revenue)}</td><td>${m.edits_approved}</td>
             // Update Chart
-            updateChart(res.months);
+            // updateChart(res.months);
         });
     }
 
-    function updateChart(monthsData) {
-        const labels = monthsData.map(m => m.month);
-        const revenue = monthsData.map(m => m.revenue);
-        const conversions = monthsData.map(m => m.converted_leads);
-        const leads = monthsData.map(m => m.total_leads);
+    // function updateChart(monthsData) {
+    //     const labels = monthsData.map(m => m.month);
+    //     const revenue = monthsData.map(m => m.revenue);
+    //     const conversions = monthsData.map(m => m.converted_leads);
+    //     const leads = monthsData.map(m => m.total_leads);
 
-        const ctx = document.getElementById('performanceChart').getContext('2d');
+    //     const ctx = document.getElementById('performanceChart').getContext('2d');
         
-        if (perfChart) perfChart.destroy();
+    //     if (perfChart) perfChart.destroy();
 
-        perfChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Revenue (₹)',
-                        data: revenue,
-                        backgroundColor: 'rgba(108,63,197, 0.15)',
-                        borderColor: '#6c3fc5',
-                        borderWidth: 2,
-                        borderRadius: 5,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Conversions',
-                        data: conversions,
-                        type: 'line',
-                        borderColor: '#26de81',
-                        backgroundColor: '#26de81',
-                        pointRadius: 4,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    },
-                    {
-                        label: 'Leads',
-                        data: leads,
-                        type: 'line',
-                        borderColor: '#45aaf2',
-                        backgroundColor: '#45aaf2',
-                        borderDash: [5, 5],
-                        pointRadius: 0,
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { intersect: false, mode: 'index' },
-                scales: {
-                    y: {
-                        position: 'left',
-                        title: { display: true, text: 'Revenue' },
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        ticks: { callback: v => '₹' + (v/1000).toFixed(0) + 'k' }
-                    },
-                    y1: {
-                        position: 'right',
-                        title: { display: true, text: 'Counts (Leads/Conv)' },
-                        grid: { drawOnChartArea: false }
-                    }
-                },
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) label += ': ';
-                                if (context.datasetIndex === 0) {
-                                    label += formatCurrency(context.parsed.y);
-                                } else {
-                                    label += context.parsed.y;
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
+    //     perfChart = new Chart(ctx, {
+    //         type: 'bar',
+    //         data: {
+    //             labels: labels,
+    //             datasets: [
+    //                 {
+    //                     label: 'Revenue (₹)',
+    //                     data: revenue,
+    //                     backgroundColor: 'rgba(108,63,197, 0.15)',
+    //                     borderColor: '#6c3fc5',
+    //                     borderWidth: 2,
+    //                     borderRadius: 5,
+    //                     yAxisID: 'y'
+    //                 },
+    //                 {
+    //                     label: 'Conversions',
+    //                     data: conversions,
+    //                     type: 'line',
+    //                     borderColor: '#26de81',
+    //                     backgroundColor: '#26de81',
+    //                     pointRadius: 4,
+    //                     tension: 0.4,
+    //                     yAxisID: 'y1'
+    //                 },
+    //                 {
+    //                     label: 'Leads',
+    //                     data: leads,
+    //                     type: 'line',
+    //                     borderColor: '#45aaf2',
+    //                     backgroundColor: '#45aaf2',
+    //                     borderDash: [5, 5],
+    //                     pointRadius: 0,
+    //                     tension: 0.4,
+    //                     yAxisID: 'y1'
+    //                 }
+    //             ]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false,
+    //             interaction: { intersect: false, mode: 'index' },
+    //             scales: {
+    //                 y: {
+    //                     position: 'left',
+    //                     title: { display: true, text: 'Revenue' },
+    //                     grid: { color: 'rgba(0,0,0,0.05)' },
+    //                     ticks: { callback: v => '₹' + (v/1000).toFixed(0) + 'k' }
+    //                 },
+    //                 y1: {
+    //                     position: 'right',
+    //                     title: { display: true, text: 'Counts (Leads/Conv)' },
+    //                     grid: { drawOnChartArea: false }
+    //                 }
+    //             },
+    //             plugins: {
+    //                 legend: { position: 'top' },
+    //                 tooltip: {
+    //                     callbacks: {
+    //                         label: function(context) {
+    //                             let label = context.dataset.label || '';
+    //                             if (label) label += ': ';
+    //                             if (context.datasetIndex === 0) {
+    //                                 label += formatCurrency(context.parsed.y);
+    //                             } else {
+    //                                 label += context.parsed.y;
+    //                             }
+    //                             return label;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });
+    // }
 
     // Initialize
     loadData($('#yearSelect').val());

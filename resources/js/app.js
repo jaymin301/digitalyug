@@ -48,7 +48,7 @@ $(document).ready(function () {
 
     // Select2
     $('.select2').select2({ width: '100%' });
-    $('.select2-multiple').select2({ width: '100%', multiple: true });
+    $('.select2-multiple').select2({ width: '100%', multiple: true, allowClear: true });
 
     // Flatpickr date
     flatpickr('.datepicker', {
@@ -86,7 +86,14 @@ $(document).ready(function () {
 
     // Mobile sidebar
     $('#mobileSidebarToggle').on('click', function () {
-        $('.sidebar').toggleClass('mobile-open');
+        $('#mainSidebar').toggleClass('mobile-open');
+        $('#sidebarOverlay').toggleClass('active');
+    });
+
+    // Close mobile sidebar on overlay click
+    $('#sidebarOverlay').on('click', function () {
+        $('#mainSidebar').removeClass('mobile-open');
+        $(this).removeClass('active');
     });
 
     // Auto-dismiss alerts

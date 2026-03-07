@@ -325,24 +325,7 @@ $(document).ready(function() {
     loadNotifications();
     // setInterval(loadNotifications, 50000);
 
-    // Mobile sidebar
-    $('#mobileSidebarToggle').on('click', function() {
-        $('#mainSidebar').toggleClass('mobile-open');
-        $('#sidebarOverlay').toggleClass('active');
-    });
 
-    $('#sidebarOverlay').on('click', function() {
-        $('#mainSidebar').removeClass('mobile-open');
-        $('#sidebarOverlay').removeClass('active');
-    });
-
-    // Sidebar submenu
-    $('.nav-item.has-submenu > .nav-link').on('click', function(e) {
-        e.preventDefault();
-        const $parent = $(this).closest('.nav-item');
-        $parent.toggleClass('open');
-        $parent.find('.submenu').toggleClass('show');
-    });
 
     // Scroll-to-top
     $(window).on('scroll', function() {
