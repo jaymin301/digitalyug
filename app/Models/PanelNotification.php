@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Events\NotificationSent;
 
 class PanelNotification extends Model
 {
@@ -59,5 +60,12 @@ class PanelNotification extends Model
         }
 
         return self::create($data);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($notification) {
+            broadcast(new NotificationSent($notification));
+        });
     }
 }

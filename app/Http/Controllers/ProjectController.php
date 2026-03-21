@@ -76,7 +76,7 @@ class ProjectController extends Controller
             'manager' => $p->manager->name ?? 'N/A',
             'start_date' => $p->start_date ? $p->start_date->format('d M Y') : 'Not Set',
             'end_date' => $p->end_date ? $p->end_date->format('d M Y') : 'Not Set',
-            'progress' => $p->workflow_progress . '%',
+            'progress' => $p->progress_percent . '%',
             'stage' => $p->stage_badge,
             'actions' => $p->id
             ];

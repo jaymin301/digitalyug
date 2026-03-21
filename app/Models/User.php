@@ -41,7 +41,7 @@ class User extends Authenticatable
      */
     public function panelNotifications(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PanelNotification::class);
+        return $this->hasMany(PanelNotification::class)->where('is_read',0);
     }
 
     /**
@@ -79,6 +79,11 @@ class User extends Authenticatable
     public function leads()
     {
         return $this->hasMany(Lead::class, 'created_by');
+    }
+
+    public function anchorShoots()
+    {
+        return $this->belongsToMany(ShootSchedule::class, 'shoot_schedule_anchors', 'user_id', 'shoot_schedule_id');
     }
     /**
      * Get the attributes that should be cast.

@@ -43,17 +43,22 @@ class ShootSchedule extends Model
         return $this->belongsTo(User::class , 'created_by');
     }
 
+    public function anchors()
+    {
+        return $this->belongsToMany(User::class , 'shoot_schedule_anchors', 'shoot_schedule_id', 'user_id');
+    }
+
     public function conceptLinks()
     {
-        return $this->hasMany(ShootConceptLink::class, 'shoot_schedule_id');
+        return $this->hasMany(ShootConceptLink::class , 'shoot_schedule_id');
     }
 
     public function concepts()
     {
-        return $this->belongsToMany(Concept::class, 'shoot_concept_links', 'shoot_schedule_id', 'concept_id');
-        // return $this->belongsToMany(Concept::class , 'shoot_concept_links')
-        //     ->withPivot('is_shot')
-        //     ->withTimestamps();
+        return $this->belongsToMany(Concept::class , 'shoot_concept_links', 'shoot_schedule_id', 'concept_id');
+    // return $this->belongsToMany(Concept::class , 'shoot_concept_links')
+    //     ->withPivot('is_shot')
+    //     ->withTimestamps();
     }
 
     public function editTasks()

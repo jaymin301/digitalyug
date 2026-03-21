@@ -135,7 +135,7 @@
                         <div style="flex:1;">
                             <div class="small fw-bold">{{ $et->title }}</div>
                             <div class="progress progress-sm my-1"><div class="progress-bar" style="width:{{ $et->progress_percent }}%"></div></div>
-                            <div class="text-muted" style="font-size:11px;">{!! $et->status_badge !!} · {{ $et->completed_count }}/{{ $et->total_videos }} videos</div>
+                            <div class="text-muted" style="font-size:11px;">{!! $et->status_badge !!} · {{ $et->approved_videos }}/{{ $et->total_videos }} approved</div>
                         </div>
                     </div>
                     @empty

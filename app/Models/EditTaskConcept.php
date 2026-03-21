@@ -3,25 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class EditTaskVideo extends Model
+class EditTaskConcept extends Pivot
 {
+    protected $table = 'edit_task_concept';
+
+    // public $incrementing = true; // because you have an id column
+
     protected $fillable = [
         'edit_task_id',
         'concept_id',
-        'video_label',
-        'status',
-        'editor_feedback',
-        'admin_internal_note',
-        'admin_status',
-        'admin_reviewed_by',
-        'admin_reviewed_at',
     ];
 
     protected $casts = [
-        'admin_reviewed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
+    // Relationships
     public function editTask()
     {
         return $this->belongsTo(EditTask::class);
@@ -30,9 +30,5 @@ class EditTaskVideo extends Model
     public function concept()
     {
         return $this->belongsTo(Concept::class);
-    }
-     public function adminReviewer()
-    {
-        return $this->belongsTo(User::class, 'admin_reviewed_by');
     }
 }

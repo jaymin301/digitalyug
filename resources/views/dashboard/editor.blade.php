@@ -26,7 +26,7 @@
                         <td>
                             <div class="d-flex align-items-center gap-2">
                                 <div class="progress flex-grow-1"><div class="progress-bar" style="width:{{ $task->progress_percent }}%"></div></div>
-                                <small>{{ $task->completed_count }}/{{ $task->total_videos }}</small>
+                                <small>Submitted: {{ $task->completed_count }} / Approved: {{ $task->approved_videos }} (Total: {{ $task->total_videos }})</small>
                             </div>
                         </td>
                         <td>{!! $task->status_badge !!}</td>

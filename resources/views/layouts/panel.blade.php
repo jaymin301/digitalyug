@@ -182,7 +182,7 @@
                 </div>
                 <div class="notif-list" id="notifList">
                     <div class="text-center text-muted py-4" id="notifEmpty">
-                        <i class="fa-solid fa-bell-slash fa-2x mb-2 d-block opacity-30"></i>
+                        <i class="fa-2x mb-2 d-block opacity-30"></i>
                         No new notifications
                     </div>
                 </div>
@@ -325,15 +325,32 @@ $(document).ready(function() {
     loadNotifications();
     // setInterval(loadNotifications, 50000);
 
-
+    $('#scrollTop').on('click', function() {
+        $('html,body').animate({ scrollTop: 0 }, 300);
+    });
 
     // Scroll-to-top
     $(window).on('scroll', function() {
         $('#scrollTop').toggleClass('visible', $(this).scrollTop() > 300);
     });
-    $('#scrollTop').on('click', function() {
-        $('html,body').animate({ scrollTop: 0 }, 300);
-    });
+});
+
+// Real-time notifications with Laravel Echo
+$(document).ready(function() {
+    if (typeof window.Echo !== 'undefined') {
+        const userId = {{ auth()->id() }};
+        window.Echo.private(`App.Models.User.${userId}`)
+            .listen('.notification.sent', (e) => {
+                console.log('Real-time notification received:', e);
+                // Reload the notification list and badge
+                loadNotifications();
+                
+                // Optional: Play a sound or show a toast
+                if (typeof showSuccess === 'function') {
+                    showSuccess(`New Notification: ${e.notification.title}`);
+                }
+            });
+    }
 });
 </script>
 </body>

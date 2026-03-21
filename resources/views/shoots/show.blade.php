@@ -94,9 +94,16 @@
         <p class="mb-0">{!! $shoot->status_badge !!}</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
+        @role('Admin|Manager')
+        @if ($shoot->status == 'scheduled' || $shoot->status == 'in_progress')     
+            <a href="{{ route('shoots.edit', $shoot) }}" class="btn btn-primary">
+                <i class="fa-solid fa-pen-to-square me-2"></i>Edit Shoot
+            </a>
+        @endif
         <a href="{{ route('projects.show', $shoot->project_id) }}" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-2"></i>Go to Project
         </a>
+        @endrole
     </div>
 </div>
 
@@ -200,12 +207,17 @@
                                     @endif
                                 @endif
                             </div>
+                            @if($c->anchor_id)
+                            <div class="mt-2 text-success fw-semibold" style="font-size:12px;">
+                                <i class="fa-solid fa-microphone-lines me-2"></i>Anchor: {{ $c->anchor->name }}
+                            </div>
+                            @endif
                             @if($c->description)
-                            <p class="text-muted small mb-0" style="line-height:1.5;">
+                            <p class="text-muted small mb-0 mt-2" style="line-height:1.5;">
                                 {{ Str::limit($c->description, 120) }}
                             </p>
                             @else
-                            <p class="text-muted small mb-0 fst-italic">No description added yet.</p>
+                            <p class="text-muted small mb-0 mt-2 fst-italic">No description added yet.</p>
                             @endif
                             @if($c->adjustment_suggestion)
                             <div class="mt-2 p-2 rounded small"
@@ -296,6 +308,20 @@
             <div class="info-row">
                 <div class="info-label">ON-SITE WRITER</div>
                 <div class="info-value" style="color:#45aaf2;">{{ $shoot->conceptWriter->name }}</div>
+            </div>
+            @endif
+
+            @if($shoot->anchors->count() > 0)
+            <div class="info-row">
+                <div class="info-label">ANCHOR TEAM</div>
+                <div class="info-value">
+                    @foreach($shoot->anchors as $anchor)
+                        <div class="d-flex align-items-center mb-1">
+                            <i class="fa-solid fa-microphone-lines me-2 text-success" style="font-size: 12px;"></i>
+                            <span>{{ $anchor->name }}</span>
+                        </div>
+                    @endforeach
+                </div>
             </div>
             @endif
 

@@ -14,7 +14,28 @@ class ShootController extends Controller
 {
     public function index()
     {
-        $shoots = ShootSchedule::with('project', 'shootingPerson')->latest()->paginate(15);
+        $user = auth()->user();
+
+        if ($user->hasRole('Admin|Manager')) {
+            $shoots = ShootSchedule::with('project', 'shootingPerson')
+                ->latest()
+                ->paginate(15);
+        }
+        elseif ($user->hasRole('Anchor Person')) {
+            $shoots = ShootSchedule::with('project', 'shootingPerson')
+                ->whereHas('anchors', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+                ->latest()
+                ->paginate(15);
+        }
+        else {
+            // Shooting Person
+            $shoots = ShootSchedule::with('project', 'shootingPerson')
+                ->where('shooting_person_id', $user->id)
+                ->latest()
+                ->paginate(15);
+        }
         return view('shoots.index', compact('shoots'));
     }
 
@@ -23,7 +44,8 @@ class ShootController extends Controller
         $project->load('approvedConcepts');
         $shooters = User::role('Shooting Person')->where('is_active', true)->get();
         $writers = User::role('Concept Writer')->where('is_active', true)->get();
-        return view('shoots.create', compact('project', 'shooters', 'writers'));
+        $anchors = User::role('Anchor Person')->where('is_active', true)->get();
+        return view('shoots.create', compact('project', 'shooters', 'writers', 'anchors'));
     }
 
     public function store(Request $request, Project $project)
@@ -34,10 +56,14 @@ class ShootController extends Controller
             'shooting_person_id' => 'required|exists:users,id',
             'planned_start_time' => 'nullable|string|max:10',
             'concept_writer_id' => 'nullable|exists:users,id',
+            'anchor_ids' => 'nullable|array',
+            'anchor_ids.*' => 'exists:users,id',
             'model_name' => 'nullable|string|max:255',
             'helper_name' => 'nullable|string|max:255',
             'concept_ids' => 'required|array|min:1',
             'concept_ids.*' => 'exists:concepts,id',
+            'concept_anchors' => 'nullable|array',
+            'concept_anchors.*' => 'nullable|exists:users,id',
             'notes' => 'nullable|string',
         ]);
 
@@ -57,6 +83,17 @@ class ShootController extends Controller
 
         foreach ($validated['concept_ids'] as $cid) {
             ShootConceptLink::create(['shoot_schedule_id' => $shoot->id, 'concept_id' => $cid]);
+
+            // ✅ Global Anchor Assignment
+            if (!empty($validated['concept_anchors'][$cid])) {
+                Concept::where('id', $cid)->whereNull('anchor_id')->update([
+                    'anchor_id' => $validated['concept_anchors'][$cid]
+                ]);
+            }
+        }
+
+        if (!empty($validated['anchor_ids'])) {
+            $shoot->anchors()->sync($validated['anchor_ids']);
         }
 
         PanelNotification::send(
@@ -81,13 +118,88 @@ class ShootController extends Controller
             );
         }
 
+        if (!empty($validated['anchor_ids'])) {
+            foreach ($validated['anchor_ids'] as $aid) {
+                PanelNotification::send(
+                    $aid,
+                    'shoot_scheduled',
+                    'Anchor Assignment',
+                    "You are assigned as Anchor for {$project->name} shoot at {$shoot->location}.",
+                    route('shoots.show', $shoot),
+                    auth()->id(),
+                    $shoot
+                );
+            }
+        }
+
         return response()->json(['success' => true, 'message' => 'Shoot scheduled successfully!', 'shoot_id' => $shoot->id]);
     }
 
     public function show(ShootSchedule $shoot)
     {
-        $shoot->load('project', 'concepts', 'shootingPerson', 'conceptWriter');
+        $shoot->load('project', 'concepts', 'shootingPerson', 'conceptWriter', 'anchors');
         return view('shoots.show', compact('shoot'));
+    }
+
+    public function edit(ShootSchedule $shoot)
+    {
+        $shoot->load('project', 'anchors', 'concepts');
+        $project = $shoot->project->load('approvedConcepts');
+        $shooters = User::role('Shooting Person')->where('is_active', true)->get();
+        $writers = User::role('Concept Writer')->where('is_active', true)->get();
+        $anchors = User::role('Anchor Person')->where('is_active', true)->get();
+        return view('shoots.edit', compact('shoot', 'project', 'shooters', 'writers', 'anchors'));
+    }
+
+    public function update(Request $request, ShootSchedule $shoot)
+    {
+        $validated = $request->validate([
+            'shoot_date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'shooting_person_id' => 'required|exists:users,id',
+            'planned_start_time' => 'nullable|string|max:10',
+            'concept_writer_id' => 'nullable|exists:users,id',
+            'anchor_ids' => 'nullable|array',
+            'anchor_ids.*' => 'exists:users,id',
+            'model_name' => 'nullable|string|max:255',
+            'helper_name' => 'nullable|string|max:255',
+            'concept_ids' => 'required|array|min:1',
+            'concept_ids.*' => 'exists:concepts,id',
+            'concept_anchors' => 'nullable|array',
+            'concept_anchors.*' => 'nullable|exists:users,id',
+            'notes' => 'nullable|string',
+            'status' => 'required|in:scheduled,in_progress,completed,cancelled',
+        ]);
+
+        $shoot->update([
+            'shoot_date' => $validated['shoot_date'],
+            'location' => $validated['location'],
+            'shooting_person_id' => $validated['shooting_person_id'],
+            'planned_start_time' => $validated['planned_start_time'] ?? null,
+            'concept_writer_id' => $validated['concept_writer_id'] ?? null,
+            'model_name' => $validated['model_name'] ?? null,
+            'helper_name' => $validated['helper_name'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'status' => $validated['status'],
+        ]);
+
+        // Sync Concepts
+        $shoot->conceptLinks()->delete();
+        foreach ($validated['concept_ids'] as $cid) {
+            ShootConceptLink::create(['shoot_schedule_id' => $shoot->id, 'concept_id' => $cid]);
+
+            // ✅ Global Anchor Assignment (Update only if currently null to maintain global consistency)
+            if (!empty($validated['concept_anchors'][$cid])) {
+                Concept::where('id', $cid)->whereNull('anchor_id')->update([
+                    'anchor_id' => $validated['concept_anchors'][$cid]
+                ]);
+            }
+        }
+
+        // Sync Anchors
+        $shoot->anchors()->sync($validated['anchor_ids'] ?? []);
+
+        return response()->json(['success' => true, 'message' => 'Shoot updated successfully!']);
     }
 
     public function checkin(ShootSchedule $shoot)
@@ -112,7 +224,7 @@ class ShootController extends Controller
                 $mid,
                 'shoot_scheduled',
                 'Shoot Started',
-                "{$shoot->shootingPerson->name} checked in for {$shoot->project->name} at {$shoot->location}.",
+                auth()->user()->name . " checked in for {$shoot->project->name} at {$shoot->location}.",
                 route('shoots.show', $shoot),
                 auth()->id(),
                 $shoot
@@ -161,7 +273,7 @@ class ShootController extends Controller
                 $mid,
                 'shoot_scheduled',
                 'Shoot Completed',
-                "{$shoot->shootingPerson->name} completed shoot for {$shoot->project->name}. {$request->reels_shot} reels shot.",
+                auth()->user()->name . " completed shoot for {$shoot->project->name}. {$request->reels_shot} reels shot.",
                 route('shoots.show', $shoot),
                 auth()->id(),
                 $shoot

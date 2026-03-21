@@ -102,7 +102,8 @@ class Project extends Model
 
     public function getCompletedEditsCountAttribute(): int
     {
-        return $this->editTasks()->where('status', 'approved')->sum('completed_count');
+        // Use the newly introduced approved_videos count for accurate pipeline progress
+        return $this->editTasks()->sum('approved_videos');
     }
 
     public function getProgressPercentAttribute(): int

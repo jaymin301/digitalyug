@@ -97,12 +97,14 @@ Route::middleware(['auth'])->group(function () {
         }
         );
 
-        // ── Shoots (Admin, Manager, Shooting Person) ───────────
-        Route::middleware(['role:Admin|Manager|Shooting Person'])->prefix('shoots')->name('shoots.')->group(function () {
+        // ── Shoots (Admin, Manager, Shooting Person, Anchor Person) ────
+        Route::middleware(['role:Admin|Manager|Shooting Person|Anchor Person'])->prefix('shoots')->name('shoots.')->group(function () {
             Route::get('/', [ShootController::class , 'index'])->name('index');
             Route::get('/create/{project}', [ShootController::class , 'create'])->name('create');
             Route::post('/create/{project}', [ShootController::class , 'store'])->name('store');
             Route::get('/{shoot}', [ShootController::class , 'show'])->name('show');
+            Route::get('/{shoot}/edit', [ShootController::class , 'edit'])->name('edit');
+            Route::put('/{shoot}', [ShootController::class , 'update'])->name('update');
             Route::post('/{shoot}/checkin', [ShootController::class , 'checkin'])->name('checkin');
             Route::post('/{shoot}/checkout', [ShootController::class , 'checkout'])->name('checkout');
             Route::post('/{shoot}/suggest', [ShootController::class , 'suggestAdjustment'])->name('suggest');
@@ -124,6 +126,10 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{editTask}/revision', [EditingController::class , 'requestRevision'])->name('revision');
             Route::delete('/{editTask}', [EditingController::class , 'destroy'])->name('destroy');
             Route::get('/data/table', [EditingController::class , 'dataTable'])->name('data');
+
+            Route::post('/{editTask}/video/{video}/approve', [EditingController::class, 'approveVideo'])->name('video.approve');
+            Route::post('/{editTask}/video/{video}/reject',  [EditingController::class, 'rejectVideo'])->name('video.reject');
+            Route::post('/{editTask}/update-description', [EditingController::class, 'updateDescription'])->name('update-description');
         }
         );
 

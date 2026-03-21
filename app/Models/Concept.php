@@ -12,10 +12,16 @@ class Concept extends Model
     protected $fillable = [
         'concept_task_id', 'project_id', 'title', 'description',
         'client_allocation', 'remarks', 'writer_notes',
-        'status', 'adjustment_suggestion', 'sequence','shoot_id','is_review_reel'
+        'status', 'adjustment_suggestion', 'sequence','shoot_id','is_review_reel',
+        'anchor_id'
     ];
 
     // ── Relationships ─────────────────────────────────────
+    public function anchor()
+    {
+        return $this->belongsTo(User::class, 'anchor_id');
+    }
+
     public function conceptTask()
     {
         return $this->belongsTo(ConceptTask::class);

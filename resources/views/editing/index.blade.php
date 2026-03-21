@@ -43,7 +43,7 @@
                     <td style="min-width:120px;">
                         <div class="d-flex align-items-center gap-2">
                             <div class="progress flex-grow-1"><div class="progress-bar" style="width:{{ $t->progress_percent }}%"></div></div>
-                            <span class="small fw-bold">{{ $t->completed_count }}/{{ $t->total_videos }}</span>
+                            <span class="small fw-bold">{{ $t->approved_videos }}/{{ $t->total_videos }}</span>
                         </div>
                     </td>
                     <td>{!! $t->status_badge !!}</td>

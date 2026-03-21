@@ -117,6 +117,48 @@
         </div>
     </div>
 
+    {{-- Team Performance Row --}}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="panel-card">
+                <div class="panel-card-header">
+                    <h5 class="panel-card-title"><i class="fa-solid fa-users-gear text-success"></i> Team Performance (Current Month)</h5>
+                    <span class="badge bg-soft-success text-success" style="background:rgba(38,222,129,0.1);font-size:12px;padding:5px 12px;">{{ now()->format('F Y') }}</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Role</th>
+                                <th class="text-center">Projects</th>
+                                <th class="text-center">Shoots Done</th>
+                                <th class="text-center">Concepts Handled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($teamPerformance as $perf)
+                            <tr>
+                                <td><strong>{{ $perf['name'] }}</strong></td>
+                                <td><span class="badge bg-soft-info text-info" style="background:rgba(69,170,242,0.1);border:1px solid rgba(69,170,242,0.2);">{{ $perf['role'] }}</span></td>
+                                <td class="text-center fw-semibold text-dark">{{ $perf['projects'] }}</td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill bg-soft-success text-success" style="background:rgba(38,222,129,0.1);border:1px solid rgba(38,222,129,0.2);min-width:35px;">{{ $perf['shoots'] }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill bg-soft-purple text-purple" style="background:rgba(108,63,197,0.1);border:1px solid rgba(108,63,197,0.2);color:#6c3fc5;min-width:35px;">{{ $perf['concepts'] }}</span>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="5" class="text-center py-4 text-muted">No shooting/anchor activity recorded this month.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Bottom Row: Chart + Recent Leads --}}
     <div class="row g-4">
         {{-- Revenue Chart --}}

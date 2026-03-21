@@ -82,5 +82,13 @@ class RolePermissionSeeder extends Seeder
             'view-projects',
             'view-notifications',
         ]);
+        
+        $anchor = Role::firstOrCreate(['name' => 'Anchor Person', 'guard_name' => 'web']);
+        $anchor->syncPermissions([
+            'view-shoots', 'checkin-checkout',
+            'view-concepts',
+            'view-projects',
+            'view-notifications',
+        ]);
     }
 }

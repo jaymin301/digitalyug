@@ -10,9 +10,9 @@ class EditTask extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id', 'concept_id', 'shoot_schedule_id',
+        'project_id', 'shoot_schedule_id',
         'assigned_to', 'assigned_by', 'title', 'description',
-        'total_videos', 'completed_count', 'status',
+        'total_videos', 'completed_count', 'approved_videos', 'status',
         'approval_notes', 'approved_at', 'approved_by',
     ];
 
@@ -26,13 +26,21 @@ class EditTask extends Model
         return $this->belongsTo(Project::class);
     }
 
+    // public function concepts()
+    // {
+    //     return $this->belongsToMany(Concept::class , 'edit_task_concept');
+    // }
+
     public function concepts()
     {
-        return $this->belongsToMany(Concept::class, 'edit_task_concept');
+        return $this->belongsToMany(Concept::class, 'edit_task_concept')
+                    ->using(EditTaskConcept::class)
+                    ->withTimestamps();
     }
+
     public function shootSchedule()
     {
-        return $this->belongsTo(ShootSchedule::class,'shoot_schedule_id');
+        return $this->belongsTo(ShootSchedule::class , 'shoot_schedule_id');
     }
 
     public function assignedTo()
@@ -55,27 +63,22 @@ class EditTask extends Model
     {
         if ($this->total_videos == 0)
             return 0;
-        return (int)round(($this->completed_count / $this->total_videos) * 100);
+        // Progress is now strictly based on final approved videos
+        return (int)round(($this->approved_videos / $this->total_videos) * 100);
     }
-    
+
     public function videoEntries()
     {
         return $this->hasMany(EditTaskVideo::class);
     }
-
-    // Override completed_count to use actual video records
-    public function getCompletedCountAttribute(): int
-    {
-        return $this->videoEntries()->where('status', 'completed')->count();
-    }
     public function getStatusBadgeAttribute(): string
     {
         return match ($this->status) {
-                'pending' => '<span class="badge bg-secondary">Pending</span>',
-                'in_progress' => '<span class="badge bg-warning text-dark">In Progress</span>',
-                'review' => '<span class="badge bg-info">Review</span>',
-                'approved' => '<span class="badge bg-success">Approved</span>',
-                'revision' => '<span class="badge bg-danger">Revision</span>',
+                'pending' => '<span class="badge" style="background:rgba(100,116,139,0.1);color:#64748b;border:1px solid rgba(100,116,139,0.2);"><i class="fa-solid fa-clock-rotate-left me-1"></i>Pending</span>',
+                'in_progress' => '<span class="badge" style="background:rgba(245,158,11,0.1);color:#d97706;border:1px solid rgba(245,158,11,0.2);"><i class="fa-solid fa-person-digging me-1"></i>In Progress</span>',
+                'review' => '<span class="badge" style="background:rgba(14,165,233,0.1);color:#0284c7;border:1px solid rgba(14,165,233,0.2);"><i class="fa-solid fa-magnifying-glass me-1"></i>In Review</span>',
+                'approved' => '<span class="badge" style="background:rgba(16,185,129,0.1);color:#059669;border:1px solid rgba(16,185,129,0.2);"><i class="fa-solid fa-circle-check me-1"></i>Approved</span>',
+                'revision' => '<span class="badge" style="background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.2);"><i class="fa-solid fa-arrows-rotate me-1"></i>Revision</span>',
                 default => '<span class="badge bg-secondary">Unknown</span>',
             };
     }
