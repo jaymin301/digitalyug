@@ -27,7 +27,15 @@ class DashboardController extends Controller
             return view('dashboard.sales_dashboard', ['myLeads' => Lead::where('created_by', $user->id)->latest()->take(5)->get()]);
         }
         if ($user->hasRole('Concept Writer')) {
-            return view('dashboard.concept', ['myTasks' => $user->conceptTasks()->with('project')->latest()->take(5)->get()]);
+            $conceptTasksIds = $user->conceptTasks()->pluck('id');
+            $totalProjects = $user->conceptTasks()->pluck('project_id')->unique()->count();
+            $totalApprovedConcepts = \App\Models\Concept::whereIn('concept_task_id', $conceptTasksIds)->where('status', 'approved')->count();
+
+            return view('dashboard.concept', [
+                'myTasks' => $user->conceptTasks()->with('project')->latest()->take(5)->get(),
+                'totalProjects' => $totalProjects,
+                'totalApprovedConcepts' => $totalApprovedConcepts,
+            ]);
         }
         if ($user->hasRole('Shooting Person')) {
             return view('dashboard.shooting_dashboard', [
@@ -90,7 +98,7 @@ class DashboardController extends Controller
             }
 
             $shoots = $query->with('concepts')->get();
-            
+
             if ($user->hasRole('Shooting Person')) {
                 $concept_count = $shoots->sum(fn($s) => $s->concepts->count());
             } else {

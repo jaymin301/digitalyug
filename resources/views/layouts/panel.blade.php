@@ -88,7 +88,7 @@
             </li>
             @endrole
 
-            @role('Admin|Manager|Shooting Person')
+            @role('Admin|Manager|Shooting Person|Anchor Person')
             <li class="nav-item">
                 <a href="{{ route('shoots.index') }}" class="nav-link {{ request()->routeIs('shoots*') ? 'active' : '' }}">
                     <i class="fa-solid fa-camera"></i>
@@ -317,12 +317,62 @@ function markRead(id, link) {
 $('#markAllRead').on('click', function() {
     $.post('{{ route('notifications.read-all') }}', function() {
         loadNotifications();
-        showSuccess('All notifications marked as read.');
     });
 });
 
+// ─── Browser Push Notifications ──────────────────────────────────────────────
+let swRegistration = null;
+
+function initPushNotifications() {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        console.warn('Browser push notifications not supported.');
+        return;
+    }
+
+    // Register Service Worker
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+            console.log('Service Worker registered:', registration);
+            swRegistration = registration;
+        })
+        .catch(err => console.error('Service Worker registration failed:', err));
+
+    // Request Permission
+    if (Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
+
+function showNativeNotification(title, message, link = '/') {
+    if (!("Notification" in window)) {
+        console.error("This browser does not support desktop notification");
+        return;
+    }
+
+    if (Notification.permission === 'granted') {
+        const options = {
+            body: message,
+            icon: '/logo.webp',
+            badge: '/logo.webp',
+            data: { link: link }
+        };
+
+        // Try show via Service Worker (Best for background)
+        if (swRegistration) {
+            swRegistration.showNotification(title, options);
+        } else {
+            // Fallback for active tab if SW is not ready
+            new Notification(title, options);
+        }
+    } else {
+        console.warn('Notification permission not granted. Current state:', Notification.permission);
+    }
+}
+
 $(document).ready(function() {
     loadNotifications();
+    initPushNotifications(); // Initialize push notification support
+    
     // setInterval(loadNotifications, 50000);
 
     $('#scrollTop').on('click', function() {
@@ -345,10 +395,17 @@ $(document).ready(function() {
                 // Reload the notification list and badge
                 loadNotifications();
                 
-                // Optional: Play a sound or show a toast
+                // Show floating success toast
                 if (typeof showSuccess === 'function') {
                     showSuccess(`New Notification: ${e.notification.title}`);
                 }
+
+                // Show native browser notification
+                showNativeNotification(
+                    e.notification.title, 
+                    e.notification.message, 
+                    e.notification.link
+                );
             });
     }
 });

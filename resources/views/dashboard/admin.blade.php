@@ -126,31 +126,31 @@
                     <span class="badge bg-soft-success text-success" style="background:rgba(38,222,129,0.1);font-size:12px;padding:5px 12px;">{{ now()->format('F Y') }}</span>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="bg-light">
+                    <table class="table table-hover dashboard-table">
+                        <thead>
                             <tr>
-                                <th>Employee Name</th>
+                                <th>Employee</th>
                                 <th>Role</th>
                                 <th class="text-center">Projects</th>
-                                <th class="text-center">Shoots Done</th>
-                                <th class="text-center">Concepts Handled</th>
+                                <th class="text-center">Shoots</th>
+                                <th class="text-center">Concepts</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($teamPerformance as $perf)
                             <tr>
-                                <td><strong>{{ $perf['name'] }}</strong></td>
-                                <td><span class="badge bg-soft-info text-info" style="background:rgba(69,170,242,0.1);border:1px solid rgba(69,170,242,0.2);">{{ $perf['role'] }}</span></td>
-                                <td class="text-center fw-semibold text-dark">{{ $perf['projects'] }}</td>
-                                <td class="text-center">
+                                <td data-label="Employee"><strong>{{ $perf['name'] }}</strong></td>
+                                <td data-label="Role"><span class="badge bg-soft-info text-info" style="background:rgba(69,170,242,0.1);border:1px solid rgba(69,170,242,0.2);">{{ $perf['role'] }}</span></td>
+                                <td data-label="Projects" class="text-center fw-semibold text-dark">{{ $perf['projects'] }}</td>
+                                <td data-label="Shoots" class="text-center">
                                     <span class="badge rounded-pill bg-soft-success text-success" style="background:rgba(38,222,129,0.1);border:1px solid rgba(38,222,129,0.2);min-width:35px;">{{ $perf['shoots'] }}</span>
                                 </td>
-                                <td class="text-center">
+                                <td data-label="Concepts" class="text-center">
                                     <span class="badge rounded-pill bg-soft-purple text-purple" style="background:rgba(108,63,197,0.1);border:1px solid rgba(108,63,197,0.2);color:#6c3fc5;min-width:35px;">{{ $perf['concepts'] }}</span>
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="5" class="text-center py-4 text-muted">No shooting/anchor activity recorded this month.</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-muted">No activity recorded this month.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -214,7 +214,7 @@
                     <a href="{{ route('leads.index') }}" class="btn btn-sm btn-primary">All Leads</a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover dashboard-table">
                         <thead><tr>
                             <th>Date</th><th>Customer</th><th>Contact</th>
                             <th>Reels</th><th>Budget</th><th>Status</th><th>By</th>
@@ -222,13 +222,13 @@
                         <tbody>
                             @forelse($recentLeads as $lead)
                             <tr>
-                                <td>{{ $lead->date->format('d M Y') }}</td>
-                                <td><strong>{{ $lead->customer_name }}</strong></td>
-                                <td>{{ $lead->contact_number }}</td>
-                                <td>{{ $lead->total_reels }}</td>
-                                <td>₹{{ number_format($lead->total_meta_budget) }}</td>
-                                <td>{!! $lead->status_badge !!}</td>
-                                <td>{{ $lead->createdBy?->name ?? 'N/A' }}</td>
+                                <td data-label="Date">{{ $lead->date->format('d M Y') }}</td>
+                                <td data-label="Customer"><strong>{{ $lead->customer_name }}</strong></td>
+                                <td data-label="Contact">{{ $lead->contact_number }}</td>
+                                <td data-label="Reels">{{ $lead->total_reels }}</td>
+                                <td data-label="Budget">₹{{ number_format($lead->total_meta_budget) }}</td>
+                                <td data-label="Status">{!! $lead->status_badge !!}</td>
+                                <td data-label="By">{{ $lead->createdBy?->name ?? 'N/A' }}</td>
                             </tr>
                             @empty
                             <tr><td colspan="7" class="text-center text-muted py-4">No leads yet</td></tr>

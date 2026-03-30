@@ -220,7 +220,7 @@ class ConceptController extends Controller
     {
         $concept->update(['status' => 'approved', 'approved_at' => now(), 'approved_by' => auth()->id()]);
 
-        PanelNotification::send($concept->task->assigned_to, 'concept_approved', 'Concept Approved!', "Your concept '{$concept->title}' was approved!", route('concepts.project', $concept->project_id), auth()->id(), $concept);
+        PanelNotification::send($concept->conceptTask->assigned_to, 'concept_approved', 'Concept Approved!', "Your concept '{$concept->title}' was approved!", route('concepts.project', $concept->project_id), auth()->id(), $concept);
 
         return response()->json(['success' => true, 'message' => 'Concept approved!']);
     }

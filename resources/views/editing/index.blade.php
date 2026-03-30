@@ -29,29 +29,42 @@
     <div class="panel-table-wrapper">
         <table id="editingTable" class="table table-hover w-100">
             <thead><tr>
-                <th>#</th><th>Task Title</th><th>Project</th><th>Editor</th>
-                <th>Concept</th><th>Progress</th><th>Status</th><th>Actions</th>
+                <th class="details-control-header"></th>
+                <th>Task Title</th>
+                <th>Project</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
             </tr></thead>
             <tbody>
                 @foreach($tasks as $i => $t)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td><strong>{{ $t->title }}</strong></td>
+                <tr data-details="{{ json_encode([
+                    'editor' => $t->assignedTo->name ?? "N/A",
+                    'concept' => $t->concept->title ?? "General",
+                    'approved' => $t->approved_videos,
+                    'total' => $t->total_videos,
+                    'project' => $t->project->name ?? "N/A"
+                ]) }}">
+                    <td class="details-control">
+                        <div class="expand-icon"><i class="fa-solid fa-plus"></i></div>
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark">{{ $t->title }}</div>
+                        <div class="text-muted small d-none d-md-block">Editor: {{ $t->assignedTo->name ?? 'N/A' }}</div>
+                    </td>
                     <td>{{ $t->project->name ?? 'N/A' }}</td>
-                    <td>{{ $t->assignedTo->name ?? 'N/A' }}</td>
-                    <td><span style="font-size:12px;">{{ $t->concept->title ?? 'General' }}</span></td>
                     <td style="min-width:120px;">
                         <div class="d-flex align-items-center gap-2">
-                            <div class="progress flex-grow-1"><div class="progress-bar" style="width:{{ $t->progress_percent }}%"></div></div>
-                            <span class="small fw-bold">{{ $t->approved_videos }}/{{ $t->total_videos }}</span>
+                            <div class="progress flex-grow-1" style="height:6px;"><div class="progress-bar" style="width:{{ $t->progress_percent }}%"></div></div>
+                            <span class="small fw-bold text-dark">{{ $t->approved_videos }}/{{ $t->total_videos }}</span>
                         </div>
                     </td>
                     <td>{!! $t->status_badge !!}</td>
                     <td>
-                        <div class="action-btns">
+                        <div class="action-btns justify-content-end">
                             <a href="{{ route('editing.show', $t) }}" class="btn-action view" title="View/Update"><i class="fa-solid fa-eye"></i></a>
                             @role('Admin|Manager')
-                            <button class="btn-action delete btn-delete" data-url="{{ route('editing.destroy', $t) }}" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn-action delete btn-delete" data-url="{{ route('editing.destroy', $t) }}" title="Delete"><i class="fa-solid fa-trash"></i></button>
                             @endrole
                         </div>
                     </td>
@@ -150,13 +163,159 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    $('#editingTable').DataTable({ 
+    function formatDetails(d) {
+        return `
+            <div class="expanded-row-details">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="detail-item mb-2">
+                            <label class="mb-1">Assignment Info</label>
+                            <div class="detail-value"><strong>Editor:</strong> ${d.editor}</div>
+                            <div class="detail-value"><strong>Concept:</strong> ${d.concept}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-item mb-2">
+                            <label class="mb-1">Production Progress</label>
+                            <div class="detail-value">Approved Videos: <span class="text-success fw-bold">${d.approved}</span> / ${d.total}</div>
+                            <div class="progress mt-2" style="height:6px; background:#e2e8f0;"><div class="progress-bar" style="width:${(d.approved/d.total)*100}%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    var table = $('#editingTable').DataTable({ 
         language: {
             search: "_INPUT_",
-            searchPlaceholder: "Search Projects or Task Titles...",
+            searchPlaceholder: "Search Tasks...",
+            lengthMenu: "Show _MENU_",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: '<i class="fa-solid fa-angles-left"></i>',
+                last: '<i class="fa-solid fa-angles-right"></i>',
+                next: '<i class="fa-solid fa-chevron-right"></i>',
+                previous: '<i class="fa-solid fa-chevron-left"></i>'
+            }
         },
-        responsive: true, 
-        pageLength: 10, 
+        dom: '<"table-controls mb-3"<"d-flex justify-content-between align-items-center flex-wrap gap-3"lf>>t<"table-footer mt-3"<"d-flex justify-content-between align-items-center flex-wrap gap-3"ip>>',
+        responsive: false,
+        pageLength: 10,
+        ordering: true,
+        order: [[1, 'asc']],
+        columnDefs: [
+            { targets: 0, orderable: false },
+            { targets: 5, orderable: false }
+        ],
+        initComplete: function() {
+            if ($(window).width() <= 767) {
+                setTimeout(buildMobileCards, 100);
+            }
+        }
+    });
+
+    // Expand logic
+    $('#editingTable tbody').on('click', 'td.details-control', function() {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+            $(this).find('i').removeClass('fa-minus').addClass('fa-plus');
+        } else {
+            row.child(formatDetails(tr.data('details'))).show();
+            tr.addClass('shown');
+            $(this).find('i').removeClass('fa-minus').addClass('fa-plus');
+        }
+    });
+
+    // Mobile Cards
+    function buildMobileCards() {
+        if ($(window).width() > 767) return;
+        $('.lead-cards-mobile').remove();
+        var $container = $('<div class="lead-cards-mobile"></div>');
+
+        $('#editingTable tbody tr').each(function() {
+            var $tr = $(this);
+            var d = $tr.data('details');
+            if (!d) return;
+
+            var title = $tr.find('td:eq(1) .fw-bold').text().trim();
+            var project = $tr.find('td:eq(2)').text().trim();
+            var progress = $tr.find('td:eq(3)').html();
+            var status = $tr.find('td:eq(4)').html();
+            var actions = $tr.find('td:eq(5)').html();
+
+            var card = $(`
+                <div class="lead-card">
+                    <div class="lead-card-header">
+                        <div class="lead-card-name text-truncate">${title}</div>
+                        <div class="lead-card-number">Editing</div>
+                    </div>
+                    <div class="lead-card-meta">
+                        <div class="lead-card-phone"><i class="fa-solid fa-folder me-1 text-primary"></i> ${project}</div>
+                    </div>
+                    <div class="lead-card-body py-2">
+                        ${progress}
+                    </div>
+                    <div class="lead-card-footer">
+                        <div class="d-flex align-items-center gap-2">
+                            ${status}
+                            <div class="lead-card-expand-btn"><i class="fa-solid fa-plus"></i></div>
+                        </div>
+                        <div class="action-btns">${actions}</div>
+                    </div>
+                    <div class="lead-card-details">
+                        <div class="detail-row"><span class="detail-label">Editor</span><span class="detail-val">${d.editor}</span></div>
+                        <div class="detail-row"><span class="detail-label">Concept</span><span class="detail-val">${d.concept}</span></div>
+                    </div>
+                </div>
+            `);
+            $container.append(card);
+        });
+
+        var $wrapper = $('#editingTable_wrapper');
+        if ($wrapper.length) {
+            $wrapper.find('.table-controls').after($container);
+        } else {
+            $('.panel-table-wrapper').prepend($container);
+        }
+        $('#editingTable').hide();
+    }
+
+    var drawTimer;
+    table.on('draw', function() {
+        if ($(window).width() <= 767) {
+            clearTimeout(drawTimer);
+            drawTimer = setTimeout(function() {
+                $('#editingTable').show();
+                buildMobileCards();
+            }, 50);
+        }
+    });
+
+    var resizeTimer;
+    $(window).on('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if ($(window).width() > 767) {
+                $('.lead-cards-mobile').remove();
+                $('#editingTable').show();
+                $('.panel-table-wrapper').show();
+            } else {
+                $('#editingTable').show();
+                buildMobileCards();
+            }
+        }, 200);
+    });
+
+    // Card Expand toggle
+    $(document).off('click', '.lead-card-expand-btn').on('click', '.lead-card-expand-btn', function() {
+        var $btn = $(this);
+        var $card = $btn.closest('.lead-card');
+        var $details = $card.find('.lead-card-details');
+        $btn.toggleClass('open');
+        $details.toggleClass('open').slideToggle(200);
     });
 
       // Client-side search

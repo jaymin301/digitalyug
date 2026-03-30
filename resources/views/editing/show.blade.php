@@ -120,7 +120,7 @@
                                             <div class="mt-2 p-2 rounded-3 small animate__animated animate__fadeIn" 
                                                 style="background: #fff5f5; border-left: 3px solid #ef4444; color: #991b1b;">
                                                 <i class="fa-solid fa-comment-dots me-1"></i>
-                                                <strong>Revision Note:</strong> {{ $entry->editor_feedback }}
+                                                <strong>Admin Feedback:</strong> {{ $entry->editor_feedback }}
                                             </div>
                                         @endif
                                     </div>
@@ -208,15 +208,15 @@
                                     </div>
                                     <div id="reviewerInfo_{{ $i }}" class="text-muted" style="font-size:9px;">
                                         @if($entry && $entry->adminReviewer)
-                                            {{ $entry->adminReviewer->name }}
+                                            <i class="fa-solid fa-user-check me-1 text-success"></i>{{ $entry->adminReviewer->name }} · {{ $entry->admin_reviewed_at->format('d M, h:i A') }}
                                         @endif
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Action buttons --}}
-                            <div class="d-flex gap-2 justify-content-end" id="actionBtns_{{ $i }}">
-                                @if($isCompleted && $editTask->status !== 'approved')
+                            <div class="d-flex gap-2 justify-content-end mt-2 mt-md-0" id="actionBtns_{{ $i }}">
+                                @if($isCompleted && $adminStatus === 'pending' && $editTask->status !== 'approved')
                                     <button class="btn btn-sm btn-success rounded-3 px-3 fw-bold" 
                                         onclick="openAuditModal({{ $entry->id }}, 'approve', {{ $i }})"
                                         style="font-size: 11px;">
@@ -228,8 +228,12 @@
                                         <i class="fa-solid fa-xmark me-1"></i> Reject
                                     </button>
                                 @endif
-                                @if($entry && $entry->admin_status !== 'pending')
-                                    <button class="btn btn-sm btn-light rounded-3" onclick="openAuditModal({{ $entry->id }}, '{{ $entry->admin_status }}', {{ $i }}, true)" title="View Details">
+                                @if($entry && $adminStatus !== 'pending')
+                                    <button class="btn btn-sm btn-light rounded-3" 
+                                        data-feedback="{{ $entry->editor_feedback }}"
+                                        data-note="{{ $entry->admin_internal_note }}"
+                                        onclick="openAuditModal({{ $entry->id }}, '{{ $adminStatus }}', {{ $i }}, true, this)" 
+                                        title="View Details">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 @endif
@@ -498,18 +502,43 @@ function saveDescription() {
 }
 
 // ─── Admin: Per-video Audit Modal ────────────────────────────────────────────
-function openAuditModal(videoId, action, rowIndex) {
+function openAuditModal(videoId, action, rowIndex, viewOnly = false, btn = null) {
     $('#auditVideoId').val(videoId);
     $('#auditRowIndex').val(rowIndex);
     $('#auditAction').val(action);
     
     const isApprove = action === 'approve';
-    $('#auditModalTitle').text(isApprove ? 'Approve Video' : 'Reject Video');
-    $('#btnAuditSubmit').removeClass('btn-success btn-danger').addClass(isApprove ? 'btn-success' : 'btn-danger')
-        .text(isApprove ? 'Confirm Approval' : 'Confirm Rejection');
+    const isReject = action === 'reject';
     
-    $('#auditEditorFeedback').val('');
-    $('#auditAdminNote').val('');
+    // Set text based on action
+    if (viewOnly) {
+        $('#auditModalTitle').text('Performance Details');
+        $('#auditModalSub').text('Reviewing stored feedback and notes');
+    } else {
+        $('#auditModalTitle').text(isApprove ? 'Approve Video' : 'Reject Video');
+        $('#auditModalSub').text('Reviewing video slot performance');
+    }
+
+    // Toggle button visibility
+    if (viewOnly) {
+        $('#btnAuditSubmit').addClass('d-none');
+    } else {
+        $('#btnAuditSubmit').removeClass('d-none btn-success btn-danger')
+            .addClass(isApprove ? 'btn-success' : 'btn-danger')
+            .text(isApprove ? 'Confirm Approval' : 'Confirm Rejection');
+    }
+    
+    // Load values
+    let feedback = '';
+    let adminNote = '';
+    
+    if (btn) {
+        feedback = $(btn).data('feedback') || '';
+        adminNote = $(btn).data('note') || '';
+    }
+    
+    $('#auditEditorFeedback').val(feedback).prop('readonly', viewOnly);
+    $('#auditAdminNote').val(adminNote).prop('readonly', viewOnly);
     
     const modal = new bootstrap.Modal(document.getElementById('auditModal'));
     modal.show();
@@ -569,7 +598,17 @@ function submitAudit() {
             if (res.task_auto_approved) {
                 setTimeout(() => location.reload(), 1200);
             } else {
-                $(`#actionBtns_${rowIndex}`).html('<span class="text-muted small">Updated</span>');
+                // Instead of "Updated", show the "View Details" button with updated data
+                const viewBtn = `
+                    <button class="btn btn-sm btn-light rounded-3" 
+                        data-feedback="${feedback}"
+                        data-note="${adminNote}"
+                        onclick="openAuditModal(${videoId}, '${res.admin_status}', ${rowIndex}, true, this)" 
+                        title="View Details">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                `;
+                $(`#actionBtns_${rowIndex}`).html(viewBtn);
             }
         },
         error() {

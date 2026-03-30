@@ -11,6 +11,20 @@
         {{-- Stats Row --}}
         <div class="stat-grid mb-4">
             <div class="stat-card">
+                <div class="stat-icon bg-blue"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="stat-body">
+                    <div class="stat-value">{{ $totalProjects }}</div>
+                    <div class="stat-label">Total Projects</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon bg-success text-white"><i class="fa-solid fa-check-double"></i></div>
+                <div class="stat-body">
+                    <div class="stat-value">{{ $totalApprovedConcepts }}</div>
+                    <div class="stat-label">Approved Concepts</div>
+                </div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-icon bg-purple"><i class="fa-solid fa-lightbulb"></i></div>
                 <div class="stat-body">
                     <div class="stat-value">{{ $myTasks->count() }}</div>

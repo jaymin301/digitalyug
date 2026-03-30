@@ -22,7 +22,7 @@ window.Swal = Swal;
 
 // DataTables
 import DataTable from 'datatables.net-bs5';
-// DataTable(window, $);
+import 'datatables.net-responsive-bs5';
 window.DataTable = DataTable;
 
 // Chart.js
