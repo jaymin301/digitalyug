@@ -167,12 +167,14 @@
                 <h5 class="panel-card-title mb-0">
                     <i class="fa-solid fa-lightbulb me-2"></i>Concepts to Shoot
                 </h5>
-                {{-- Show add button only when checked-in and not checked-out --}}
-                @if($shoot->checkin_at && !$shoot->checkout_at)
-                <button class="btn btn-sm btn-success" onclick="addNewConcept()">
-                    <i class="fa-solid fa-plus me-1"></i>Add New Concept
-                </button>
-                @endif
+                @role('Admin|Manager|Shooting Person')
+                    {{-- Show add button only when checked-in and not checked-out --}}
+                    @if($shoot->checkin_at && !$shoot->checkout_at)
+                        <button class="btn btn-sm btn-success" onclick="addNewConcept()">
+                            <i class="fa-solid fa-plus me-1"></i>Add New Concept
+                        </button>
+                    @endif
+                @endrole
             </div>
 
             @forelse($shoot->concepts as $i => $c)
@@ -230,41 +232,46 @@
                     </div>
 
                     {{-- Right: action button --}}
-                    @if(!$shoot->checkout_at)
-                    <div class="flex-shrink-0">
-                        <button class="btn btn-sm btn-outline-primary"
-                            onclick="editConcept(
-                                {{ $c->id }},
-                                '{{ addslashes($c->title) }}',
-                                `{{ addslashes($c->description ?? '') }}`,
-                                `{{ addslashes($c->adjustment_suggestion ?? '') }}`
-                            )">
-                            <i class="fa-solid fa-pen me-1"></i>Edit
-                        </button>
-                    </div>
-                    @endif
+                    @role('Admin|Manager|Shooting Person')
+                        @if(!$shoot->checkout_at)
+                            <div class="flex-shrink-0">
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="editConcept(
+                                        {{ $c->id }},
+                                        '{{ addslashes($c->title) }}',
+                                        `{{ addslashes($c->description ?? '') }}`,
+                                        `{{ addslashes($c->adjustment_suggestion ?? '') }}`
+                                    )">
+                                    <i class="fa-solid fa-pen me-1"></i>Edit
+                                </button>
+                            </div>
+                        @endif
+                    @endrole
                 </div>
             </div>
             @empty
             <div class="text-center py-5">
                 <i class="fa-solid fa-lightbulb fa-3x text-muted opacity-25 mb-3 d-block"></i>
                 <p class="text-muted">No concepts linked to this shoot.</p>
-                @if($shoot->checkin_at && !$shoot->checkout_at)
-                <button class="btn btn-outline-primary btn-sm mt-2" onclick="addNewConcept()">
-                    <i class="fa-solid fa-plus me-1"></i>Add First Concept
-                </button>
-                @endif
+                @role('Admin|Manager|Shooting Person')
+                    @if($shoot->checkin_at && !$shoot->checkout_at)
+                        <button class="btn btn-outline-primary btn-sm mt-2" onclick="addNewConcept()">
+                            <i class="fa-solid fa-plus me-1"></i>Add First Concept
+                        </button>
+                    @endif
+                @endrole
             </div>
             @endforelse
-
-            {{-- Add concept dashed button (only when active) --}}
-            @if($shoot->checkin_at && !$shoot->checkout_at && $shoot->concepts->count() > 0)
-            <div class="mt-3">
-                <button class="add-concept-btn" onclick="addNewConcept()">
-                    <i class="fa-solid fa-plus me-2"></i>Add Another Concept
-                </button>
-            </div>
-            @endif
+            @role('Admin|Manager|Shooting Person')
+                {{-- Add concept dashed button (only when active) --}}
+                @if($shoot->checkin_at && !$shoot->checkout_at && $shoot->concepts->count() > 0)
+                    <div class="mt-3">
+                        <button class="add-concept-btn" onclick="addNewConcept()">
+                            <i class="fa-solid fa-plus me-2"></i>Add Another Concept
+                        </button>
+                    </div>
+                @endif
+            @endrole
         </div>
     </div>
 

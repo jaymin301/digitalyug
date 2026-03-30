@@ -9,6 +9,7 @@ use App\Models\ShootSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
 class DashboardController extends Controller
 {
@@ -82,8 +83,10 @@ class DashboardController extends Controller
     private function getPerformanceStats($user): array
     {
         $months = [];
+        $now = CarbonImmutable::now()->startOfMonth();
         for ($i = 5; $i >= 0; $i--) {
-            $d = Carbon::now()->subMonths($i);
+            $d = $now->subMonthsNoOverflow($i);
+            // $d = Carbon::now()->subMonths($i);
             
             $query = ShootSchedule::whereYear('shoot_date', $d->year)
                 ->whereMonth('shoot_date', $d->month)
