@@ -67,11 +67,11 @@
         </div>
         @endif
 
-        @if($concept->remarks)
-        <div class="small p-2 rounded mb-3" style="background:rgba(235,77,75,0.1);border-left:3px solid #eb4d4b;">
-            <i class="fa-solid fa-circle-exclamation me-1 text-danger"></i>
-            <strong>Feedback:</strong> {{ $concept->remarks }}
-        </div>
+        @if($concept->client_note)
+            <div class="small p-2 rounded mb-3" style="background:rgba(235,77,75,0.1);border-left:3px solid #eb4d4b;">
+                <i class="fa-solid fa-circle-exclamation me-1 text-danger"></i>
+                <strong>Feedback:</strong> {{ $concept->client_note }}
+            </div>
         @endif
 
         {{-- Action buttons --}}
@@ -139,7 +139,7 @@ $('.btn-reject').on('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i>');
-            $.post(url, { _token: '{{ csrf_token() }}', remarks: result.value })
+            $.post(url, { _token: '{{ csrf_token() }}', client_note: result.value })
             .done(function(res) {
                 Swal.fire('Feedback Sent!', res.message, 'success')
                     .then(() => location.reload());

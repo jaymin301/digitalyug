@@ -4,14 +4,20 @@
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('concepts.index') }}">Concepts</a></li>
-    <li class="breadcrumb-item active">{{ $project->name }}</li>
+    @if(isset($conceptTask) && $conceptTask)
+        <li class="breadcrumb-item"><a href="{{ route('concepts.project', $project) }}">{{ $project->name }}</a></li>
+        <li class="breadcrumb-item active">Task #{{ $conceptTask->id }}</li>
+    @else
+        <li class="breadcrumb-item active">{{ $project->name }}</li>
+    @endif
 @endsection
 
 @section('content')
 
 @php
-    $allConcepts    = $project->concepts;
-    $totalRequired  = $project->conceptTasks->sum('concepts_required');
+    $isTaskView     = isset($conceptTask) && $conceptTask;
+    $allConcepts    = $isTaskView ? $conceptTask->concepts : $project->concepts;
+    $totalRequired  = $isTaskView ? $conceptTask->concepts_required : $project->conceptTasks->sum('concepts_required');
     $submitted      = $allConcepts->count();
     $approved       = $allConcepts->where('status', 'approved')->count();
     $rejected       = $allConcepts->where('status', 'rejected')->count();
@@ -22,8 +28,21 @@
 {{-- ── Page Header ──────────────────────────────────────── --}}
 <div class="page-header">
     <div>
-        <h1 class="page-title">{{ $project->name }}</h1>
-        <p class="text-muted mb-0">Review and manage creative concepts for this project.</p>
+        <h1 class="page-title">
+            {{ $project->name }}
+            @if(isset($conceptTask) && $conceptTask)
+                <span class="text-primary" style="font-size: 0.6em; vertical-align: middle; opacity: 0.8; margin-left: 8px;">
+                    <i class="fa-solid fa-file-pen me-1"></i>Task #{{ $conceptTask->id }}
+                </span>
+            @endif
+        </h1>
+        <p class="text-muted mb-0">
+            @if(isset($conceptTask) && $conceptTask)
+                Review concepts for the task assigned to <strong>{{ $conceptTask->assignedTo->name ?? 'Unassigned' }}</strong>.
+            @else
+                Review and manage creative concepts for this project.
+            @endif
+        </p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         @role('Admin|Manager')
@@ -39,11 +58,14 @@
                 <i class="fa-solid fa-arrow-left me-2"></i>Back to Concepts
             </a>
         @endrole
-        @if($project->conceptTasks->first())
-        <button class="btn btn-success" id="generateLinkBtn"
-            data-url="{{ route('concepts.generate-link', $project->conceptTasks->first()) }}">
-            <i class="fa-solid fa-share-nodes me-2"></i>Share with Client
-        </button>
+        @php
+            $shareTask = (isset($conceptTask) && $conceptTask) ? $conceptTask : $project->conceptTasks->first();
+        @endphp
+        @if($shareTask)
+            <button class="btn btn-success" id="generateLinkBtn"
+                data-url="{{ route('concepts.generate-link', $shareTask) }}">
+                <i class="fa-solid fa-share-nodes me-2"></i>Share with Client
+            </button>
         @endif
     </div>
 </div>
@@ -205,10 +227,18 @@
 
             {{-- Manager remarks --}}
             @if($concept->remarks)
-            <div class="co-info-box danger mb-3">
-                <i class="fa-solid fa-circle-exclamation me-1 text-danger"></i>
-                <strong>Manager Remarks:</strong> {{ $concept->remarks }}
-            </div>
+                <div class="co-info-box success mb-3">
+                    <i class="fa-solid fa-circle-exclamation me-1 text-success"></i>
+                    <strong>Manager Remarks:</strong> {{ $concept->remarks }}
+                </div>
+            @endif
+           
+            {{-- Client reject reason --}}
+            @if($concept->client_note)
+                <div class="co-info-box danger mb-3">
+                    <i class="fa-solid fa-circle-exclamation me-1 text-danger"></i>
+                    <strong>Client reject reason:</strong> {{ $concept->client_note }}
+                </div>
             @endif
 
             {{-- Action buttons --}}

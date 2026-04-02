@@ -176,91 +176,96 @@
                     @endif
                 @endrole
             </div>
-
+            
             @forelse($shoot->concepts as $i => $c)
-            @php
-                $link = $shoot->checkout_at
-                    ? $shoot->conceptLinks()->where('concept_id', $c->id)->first()
-                    : null;
-                $cardClass = '';
-                if ($link) $cardClass = $link->is_shot ? 'is-shot' : 'is-missed';
-                if ($c->is_review_reel ?? false) $cardClass = 'is-review';
-            @endphp
+                @role('Anchor Person')
+                    @if(auth()->user()->id != $c->anchor_id)
+                        @continue
+                    @endif
+                @endrole
+                @php
+                    $link = $shoot->checkout_at
+                        ? $shoot->conceptLinks()->where('concept_id', $c->id)->first()
+                        : null;
+                    $cardClass = '';
+                    if ($link) $cardClass = $link->is_shot ? 'is-shot' : 'is-missed';
+                    if ($c->is_review_reel ?? false) $cardClass = 'is-review';
+                @endphp
 
-            <div class="concept-shoot-card {{ $cardClass }}">
-                <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-                    {{-- Left: info --}}
-                    <div class="d-flex align-items-start gap-3 flex-fill" style="min-width:0;">
-                        <div class="concept-num">{{ $i + 1 }}</div>
-                        <div style="min-width:0;flex:1;">
-                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                <span class="fw-bold" style="font-size:14px;color:#2d3748;">{{ $c->title }}</span>
-                                @if($c->is_review_reel ?? false)
-                                <span class="badge" style="background:rgba(69,170,242,0.12);color:#1a6fa3;font-size:10px;">
-                                    <i class="fa-solid fa-video me-1"></i>Review Reel
-                                </span>
-                                @endif
-                                {{-- Shot / Missed badge --}}
-                                @if($shoot->checkout_at)
-                                    @if($link && $link->is_shot)
-                                    <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Shot</span>
-                                    @else
-                                    <span class="badge bg-danger">Missed</span>
+                <div class="concept-shoot-card {{ $cardClass }}">
+                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                        {{-- Left: info --}}
+                        <div class="d-flex align-items-start gap-3 flex-fill" style="min-width:0;">
+                            <div class="concept-num">{{ $i + 1 }}</div>
+                            <div style="min-width:0;flex:1;">
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                    <span class="fw-bold" style="font-size:14px;color:#2d3748;">{{ $c->title }}</span>
+                                    @if($c->is_review_reel ?? false)
+                                    <span class="badge" style="background:rgba(69,170,242,0.12);color:#1a6fa3;font-size:10px;">
+                                        <i class="fa-solid fa-video me-1"></i>Review Reel
+                                    </span>
                                     @endif
+                                    {{-- Shot / Missed badge --}}
+                                    @if($shoot->checkout_at)
+                                        @if($link && $link->is_shot)
+                                        <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Shot</span>
+                                        @else
+                                        <span class="badge bg-danger">Missed</span>
+                                        @endif
+                                    @endif
+                                </div>
+                                @if($c->anchor_id)
+                                <div class="mt-2 text-success fw-semibold" style="font-size:12px;">
+                                    <i class="fa-solid fa-microphone-lines me-2"></i>Anchor: {{ $c->anchor->name }}
+                                </div>
+                                @endif
+                                @if($c->description)
+                                <p class="text-muted small mb-0 mt-2" style="line-height:1.5;">
+                                    {{ Str::limit($c->description, 120) }}
+                                </p>
+                                @else
+                                <p class="text-muted small mb-0 mt-2 fst-italic">No description added yet.</p>
+                                @endif
+                                @if($c->adjustment_suggestion)
+                                <div class="mt-2 p-2 rounded small"
+                                    style="background:rgba(247,183,49,0.08);border-left:3px solid #f7b731;font-size:12px;">
+                                    <i class="fa-solid fa-lightbulb me-1 text-warning"></i>
+                                    <strong>Suggestion:</strong> {{ Str::limit($c->adjustment_suggestion, 80) }}
+                                </div>
                                 @endif
                             </div>
-                            @if($c->anchor_id)
-                            <div class="mt-2 text-success fw-semibold" style="font-size:12px;">
-                                <i class="fa-solid fa-microphone-lines me-2"></i>Anchor: {{ $c->anchor->name }}
-                            </div>
-                            @endif
-                            @if($c->description)
-                            <p class="text-muted small mb-0 mt-2" style="line-height:1.5;">
-                                {{ Str::limit($c->description, 120) }}
-                            </p>
-                            @else
-                            <p class="text-muted small mb-0 mt-2 fst-italic">No description added yet.</p>
-                            @endif
-                            @if($c->adjustment_suggestion)
-                            <div class="mt-2 p-2 rounded small"
-                                style="background:rgba(247,183,49,0.08);border-left:3px solid #f7b731;font-size:12px;">
-                                <i class="fa-solid fa-lightbulb me-1 text-warning"></i>
-                                <strong>Suggestion:</strong> {{ Str::limit($c->adjustment_suggestion, 80) }}
-                            </div>
-                            @endif
                         </div>
-                    </div>
 
-                    {{-- Right: action button --}}
+                        {{-- Right: action button --}}
+                        @role('Admin|Manager|Shooting Person')
+                            @if(!$shoot->checkout_at)
+                                <div class="flex-shrink-0">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                        onclick="editConcept(
+                                            {{ $c->id }},
+                                            '{{ addslashes($c->title) }}',
+                                            `{{ addslashes($c->description ?? '') }}`,
+                                            `{{ addslashes($c->adjustment_suggestion ?? '') }}`
+                                        )">
+                                        <i class="fa-solid fa-pen me-1"></i>Edit
+                                    </button>
+                                </div>
+                            @endif
+                        @endrole
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-lightbulb fa-3x text-muted opacity-25 mb-3 d-block"></i>
+                    <p class="text-muted">No concepts linked to this shoot.</p>
                     @role('Admin|Manager|Shooting Person')
-                        @if(!$shoot->checkout_at)
-                            <div class="flex-shrink-0">
-                                <button class="btn btn-sm btn-outline-primary"
-                                    onclick="editConcept(
-                                        {{ $c->id }},
-                                        '{{ addslashes($c->title) }}',
-                                        `{{ addslashes($c->description ?? '') }}`,
-                                        `{{ addslashes($c->adjustment_suggestion ?? '') }}`
-                                    )">
-                                    <i class="fa-solid fa-pen me-1"></i>Edit
-                                </button>
-                            </div>
+                        @if($shoot->checkin_at && !$shoot->checkout_at)
+                            <button class="btn btn-outline-primary btn-sm mt-2" onclick="addNewConcept()">
+                                <i class="fa-solid fa-plus me-1"></i>Add First Concept
+                            </button>
                         @endif
                     @endrole
                 </div>
-            </div>
-            @empty
-            <div class="text-center py-5">
-                <i class="fa-solid fa-lightbulb fa-3x text-muted opacity-25 mb-3 d-block"></i>
-                <p class="text-muted">No concepts linked to this shoot.</p>
-                @role('Admin|Manager|Shooting Person')
-                    @if($shoot->checkin_at && !$shoot->checkout_at)
-                        <button class="btn btn-outline-primary btn-sm mt-2" onclick="addNewConcept()">
-                            <i class="fa-solid fa-plus me-1"></i>Add First Concept
-                        </button>
-                    @endif
-                @endrole
-            </div>
             @endforelse
             @role('Admin|Manager|Shooting Person')
                 {{-- Add concept dashed button (only when active) --}}

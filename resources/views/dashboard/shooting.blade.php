@@ -26,7 +26,7 @@
                     <i class="fa-solid fa-camera"></i>
                 </div>
                 <div>
-                    <div class="text-muted small fw-bold">SHOOTS COMPLETED</div>
+                    <div class="text-muted small fw-bold">SHOOTS COMPLETED THIS MONTH</div>
                     <div class="h5 fw-bold mb-0">{{ $latest['shoot_count'] ?? 0 }}</div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                     <i class="fa-solid fa-lightbulb"></i>
                 </div>
                 <div>
-                    <div class="text-muted small fw-bold">CONCEPTS HANDLED</div>
+                    <div class="text-muted small fw-bold">CONCEPTS HANDLED THIS MONTH</div>
                     <div class="h5 fw-bold mb-0">{{ $latest['concept_count'] ?? 0 }}</div>
                 </div>
             </div>

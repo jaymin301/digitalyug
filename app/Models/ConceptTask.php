@@ -22,7 +22,7 @@ class ConceptTask extends Model
     // ── Relationships ─────────────────────────────────────
     public function project()
     {
-        return $this->belongsTo(Project::class)->withTrashed();
+        return $this->belongsTo(Project::class,'project_id')->withTrashed();
     }
 
     public function assignedTo()

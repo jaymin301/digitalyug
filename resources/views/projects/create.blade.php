@@ -1,41 +1,45 @@
 @extends('layouts.panel')
-@section('title', 'Add Lead')
+@section('title', 'New Project')
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('leads.index') }}">Leads</a></li>
-    <li class="breadcrumb-item active">Add Lead</li>
+    <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Projects</a></li>
+    <li class="breadcrumb-item active">New Project</li>
 @endsection
 @section('content')
 <div class="page-header">
-    <h1 class="page-title">New Lead <span class="page-subtitle">Add a Digital Yug client inquiry</span></h1>
-    <a href="{{ route('leads.index') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Back</a>
+    <h1 class="page-title">New Project <span class="page-subtitle">Create a project directly without a lead</span></h1>
+    <a href="{{ route('projects.index') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Back</a>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-lg-9">
         <div class="panel-card">
-            <form id="leadForm" method="POST">
+            <form id="projectForm" method="POST">
                 @csrf
                 <div class="row g-3">
+
+                    {{-- Project Name --}}
+                    <div class="col-12">
+                        <label class="form-label">Project Name <span class="required">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Project: Bodhi Wellness Spa" required>
+                    </div>
+
                     {{-- Date & Day --}}
                     <div class="col-md-4">
                         <label class="form-label">Date <span class="required">*</span></label>
-                        <input type="text" name="date" id="leadDate" class="form-control datepicker" placeholder="YYYY-MM-DD" required>
+                        <input type="text" name="date" id="projectDate" class="form-control datepicker" placeholder="YYYY-MM-DD" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Day</label>
-                        <input type="text" id="leadDay" class="form-control" readonly placeholder="Auto-filled" style="background:#f7f8ff;">
+                        <input type="text" id="projectDay" class="form-control" readonly placeholder="Auto-filled" style="background:#f7f8ff;">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Agency <span class="required">*</span></label>
-                        <select name="agency_id" class="form-select @error('agency_id') is-invalid @enderror select2" required>
+                        <label class="form-label">Agency</label>
+                        <select name="agency_id" class="form-select select2">
                             <option value="">Select Agency</option>
                             @foreach($agencies as $agency)
                                 <option value="{{ $agency->id }}">{{ $agency->name }}</option>
                             @endforeach
                         </select>
-                        @error('agency_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
                     {{-- Customer details --}}
@@ -57,7 +61,8 @@
                         <label class="form-label">Total Posts <span class="required">*</span></label>
                         <input type="number" name="total_posts" class="form-control" min="0" value="0" required>
                     </div>
-                    
+                    <div class="col-md-4"></div>
+
                     {{-- Meta Budget --}}
                     <div class="col-12"><hr class="my-1"><label class="form-label fw-bold">Meta Budget Distribution</label></div>
                     <div class="col-md-4">
@@ -75,12 +80,13 @@
 
                     <div class="col-12">
                         <label class="form-label">Notes</label>
-                        <textarea name="notes" class="form-control" rows="3" placeholder="Any additional info about this lead..."></textarea>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Any additional info about this project..."></textarea>
                     </div>
                 </div>
+
                 <div class="mt-4 d-flex gap-2 justify-content-end">
-                    <a href="{{ route('leads.index') }}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary" id="submitBtn"><i class="fa-solid fa-plus me-2"></i>Create Lead</button>
+                    <a href="{{ route('projects.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="submitBtn"><i class="fa-solid fa-plus me-2"></i>Create Project</button>
                 </div>
             </form>
         </div>
@@ -92,13 +98,13 @@
 <script>
 $(document).ready(function() {
     // Auto-fill day from date
-    flatpickr('#leadDate', {
+    flatpickr('#projectDate', {
         dateFormat: 'Y-m-d',
         allowInput: true,
         onChange: function(selectedDates) {
             if (selectedDates[0]) {
                 const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                $('#leadDay').val(days[selectedDates[0].getDay()]);
+                $('#projectDay').val(days[selectedDates[0].getDay()]);
             }
         }
     });
@@ -112,13 +118,13 @@ $(document).ready(function() {
     $('#totalBudget, #clientBudget').on('input', calcDyBudget);
 
     // AJAX form submit
-    $('#leadForm').on('submit', function(e) {
+    $('#projectForm').on('submit', function(e) {
         e.preventDefault();
         const btn = $('#submitBtn').prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i>Saving...');
-        ajaxPost('{{ route('leads.store') }}', $(this).serialize(), function(res) {
+        ajaxPost('{{ route('projects.store') }}', $(this).serialize(), function(res) {
             showSuccess(res.message);
-            setTimeout(() => location.href = '{{ route('leads.index') }}', 1500);
-        }, () => btn.prop('disabled',false).html('<i class="fa-solid fa-plus me-2"></i>Create Lead'));
+            setTimeout(() => location.href = '{{ route('projects.index') }}', 1500);
+        }, () => btn.prop('disabled', false).html('<i class="fa-solid fa-plus me-2"></i>Create Project'));
     });
 });
 </script>

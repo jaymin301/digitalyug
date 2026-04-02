@@ -24,9 +24,9 @@
         <div class="mb-3">
             <div class="d-flex justify-content-between">
                 <label for="password" class="form-label">Password</label>
-                @if (Route::has('password.request'))
+                {{-- @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="small text-white-50">Forgot?</a>
-                @endif
+                @endif --}}
             </div>
             <input id="password" type="password" name="password" 
                    class="form-control @error('password') is-invalid @enderror" 
