@@ -542,6 +542,11 @@
         border-left: 3px solid #f7b731;
     }
 
+    &.success {
+        background: rgba(154, 250, 64, 0.07);
+        border-left: 3px solid #65d439;
+    }
+
     &.danger {
         background: rgba(235, 77, 75, 0.07);
         border-left: 3px solid #eb4d4b;

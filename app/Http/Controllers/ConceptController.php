@@ -24,10 +24,21 @@ class ConceptController extends Controller
         return view('concepts.index', compact('tasks'));
     }
 
-    public function projectConcepts(Project $project)
+    public function projectConcepts(Request $request, Project $project)
     {
-        $project->load('concepts', 'concepts.approvedBy', 'concepts.shootingConcept', 'conceptTasks.assignedTo');
-        return view('concepts.project_overview', compact('project'));
+        $taskId = $request->query('task');
+        $conceptTask = null;
+
+        if ($taskId) {
+            $conceptTask = ConceptTask::with(['concepts.approvedBy', 'concepts.shootingConcept', 'assignedTo'])
+                ->where('id', $taskId)
+                ->where('project_id', $project->id)
+                ->firstOrFail();
+        } else {
+            $project->load(['concepts.approvedBy', 'concepts.shootingConcept', 'conceptTasks.assignedTo']);
+        }
+
+        return view('concepts.project_overview', compact('project', 'conceptTask'));
     }
 
     public function assignForm(Project $project)
@@ -218,7 +229,7 @@ class ConceptController extends Controller
 
     public function approve(Request $request, Concept $concept)
     {
-        $concept->update(['status' => 'approved', 'approved_at' => now(), 'approved_by' => auth()->id()]);
+        $concept->update(['status' => 'approved', 'remarks' => null, 'approved_at' => now(), 'approved_by' => auth()->id()]);
 
         PanelNotification::send($concept->conceptTask->assigned_to, 'concept_approved', 'Concept Approved!', "Your concept '{$concept->title}' was approved!", route('concepts.project', $concept->project_id), auth()->id(), $concept);
 
@@ -287,7 +298,7 @@ class ConceptController extends Controller
     // Client rejects a concept - no auth required
     public function clientReject(Request $request, string $token, Concept $concept)
     {
-        $request->validate(['remarks' => 'required|string']);
+        $request->validate(['client_note' => 'required|string']);
 
         $conceptTask = ConceptTask::where('client_token', $token)
             ->where('client_token_expires_at', '>', now())
@@ -297,7 +308,7 @@ class ConceptController extends Controller
 
         $concept->update([
             'status' => 'rejected',
-            'remarks' => $request->remarks,
+            'client_note' => $request->client_note,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Feedback submitted!']);

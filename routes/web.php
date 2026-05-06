@@ -70,14 +70,17 @@ Route::middleware(['auth'])->group(function () {
 
         // ── Projects (Admin, Manager) ──────────────────────────
         Route::middleware(['role:Admin|Manager'])->prefix('projects')->name('projects.')->group(function () {
-            Route::get('/', [ProjectController::class , 'index'])->name('index');
-            Route::get('/{project}', [ProjectController::class , 'show'])->name('show');
-            Route::post('/from-lead/{lead}', [ProjectController::class , 'createFromLead'])->name('create-from-lead');
-            Route::post('/{project}/activate', [ProjectController::class , 'activate'])->name('activate');
-            Route::delete('/{project}', [ProjectController::class , 'destroy'])->name('destroy');
-            Route::get('/data/table', [ProjectController::class , 'dataTable'])->name('data');
-        }
-        );
+            Route::get('/', [ProjectController::class, 'index'])->name('index');
+            Route::get('/create', [ProjectController::class, 'create'])->name('create');
+            Route::post('/', [ProjectController::class, 'store'])->name('store');
+            Route::get('/data/table', [ProjectController::class, 'dataTable'])->name('data');
+            Route::post('/from-lead/{lead}', [ProjectController::class, 'createFromLead'])->name('create-from-lead');
+            Route::get('/{project}', [ProjectController::class, 'show'])->name('show');
+            Route::get('/{project}/edit', [ProjectController::class, 'edit'])->name('edit');
+            Route::put('/{project}', [ProjectController::class, 'update'])->name('update');
+            Route::post('/{project}/activate', [ProjectController::class, 'activate'])->name('activate');
+            Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('destroy');
+        });
 
         // ── Concepts (Admin, Manager, Concept Writer) ──────────
         Route::middleware(['role:Admin|Manager|Concept Writer'])->prefix('concepts')->name('concepts.')->group(function () {

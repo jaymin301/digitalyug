@@ -37,9 +37,9 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
+                        <select name="status" class="form-select select2">
                             @foreach(['new','contacted','confirmed','converted','lost'] as $s)
-                            <option value="{{ $s }}" {{ $lead->status === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
+                                <option value="{{ $s }}" {{ $lead->status === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
                             @endforeach
                         </select>
                     </div>

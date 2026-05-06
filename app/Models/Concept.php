@@ -11,7 +11,7 @@ class Concept extends Model
 
     protected $fillable = [
         'concept_task_id', 'project_id', 'title', 'description',
-        'client_allocation', 'remarks', 'writer_notes',
+        'client_allocation', 'remarks', 'writer_notes','client_note',
         'status', 'adjustment_suggestion', 'sequence','shoot_id','is_review_reel',
         'anchor_id'
     ];

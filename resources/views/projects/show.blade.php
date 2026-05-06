@@ -12,6 +12,7 @@
         <button class="btn btn-primary" onclick="activateProject({{ $project->id }})"><i class="fa-solid fa-bolt me-2"></i>Activate Project</button>
         @endif
         @role('Admin|Manager')
+        <a href="{{ route('projects.edit', $project) }}" class="btn btn-outline-secondary"><i class="fa-solid fa-pen-to-square me-2"></i>Edit</a>
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Manage Workflow</button>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -62,7 +63,10 @@
                 <div class="col-4">
                     <div class="text-muted small mb-1">CONCEPTS</div>
                     <div class="h5 fw-bold mb-0">
-                        {{ $project->approved_concepts_count }} / {{ $project->conceptTasks->sum('concepts_required') ?: $project->lead->total_reels }}
+                        @php
+                            $reelTarget = $project->total_reels ?: ($project->lead?->total_reels ?? 1);
+                        @endphp
+                        {{ $project->approved_concepts_count }} / {{ $project->conceptTasks->sum('concepts_required') ?: $reelTarget }}
                     </div>
                 </div>
                 <div class="col-4 border-start">
@@ -72,7 +76,7 @@
                 <div class="col-4 border-start">
                     <div class="text-muted small mb-1">VIDEOS</div>
                     <div class="h5 fw-bold mb-0">
-                        {{ $project->completed_edits_count }} / {{ $project->editTasks->sum('total_videos') ?: $project->lead->total_reels }}
+                        {{ $project->completed_edits_count }} / {{ $project->editTasks->sum('total_videos') ?: $reelTarget }}
                     </div>
                 </div>
             </div>
@@ -152,11 +156,11 @@
             <h5 class="panel-card-title mb-4"><i class="fa-solid fa-info-circle"></i> Project Info</h5>
             <div class="mb-3">
                 <label class="form-label">Client Name</label>
-                <div class="fw-bold">{{ $project->lead->customer_name ?? 'N/A' }}</div>
+                <div class="fw-bold">{{ $project->customer_name ?: ($project->lead?->customer_name ?? 'N/A') }}</div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Assigned Manager</label>
-                <div class="fw-bold">{{ $project->manager->name ?? 'Unassigned' }}</div>
+                <div class="fw-bold">{{ $project->manager?->name ?? 'Unassigned' }}</div>
             </div>
             <div class="row mb-3">
                 <div class="col-6">
@@ -170,27 +174,32 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Contact Number</label>
-                <div class="fw-bold">{{ $project->lead->contact_number ?? 'N/A' }}</div>
+                <div class="fw-bold">{{ $project->contact_number ?: ($project->lead?->contact_number ?? 'N/A') }}</div>
             </div>
         </div>
 
         <div class="panel-card">
             <h5 class="panel-card-title mb-4"><i class="fa-solid fa-money-bill-wave"></i> Budget Allocation</h5>
+            @php
+                $totalBudget  = $project->total_meta_budget  ?: ($project->lead?->total_meta_budget ?? 0);
+                $clientBudget = $project->client_meta_budget ?: ($project->lead?->client_meta_budget ?? 0);
+                $dyBudget     = $project->dy_meta_budget     ?: ($project->lead?->dy_meta_budget ?? 0);
+            @endphp
             <div class="mb-3">
-                <div class="h3 fw-bold mb-0">₹{{ number_format($project->lead->total_meta_budget ?? 0) }}</div>
+                <div class="h3 fw-bold mb-0">₹{{ number_format($totalBudget) }}</div>
                 <div class="text-muted small">Total Meta Budget</div>
             </div>
             <div class="d-flex justify-content-between mb-1">
                 <span class="small text-muted">Client Side</span>
-                <span class="small fw-bold">₹{{ number_format($project->lead->client_meta_budget ?? 0) }}</span>
+                <span class="small fw-bold">₹{{ number_format($clientBudget) }}</span>
             </div>
-            <div class="progress progress-sm mb-3"><div class="progress-bar bg-info" style="width:{{ $project->lead->total_meta_budget > 0 ? ($project->lead->client_meta_budget / $project->lead->total_meta_budget * 100) : 0 }}%"></div></div>
-            
+            <div class="progress progress-sm mb-3"><div class="progress-bar bg-info" style="width:{{ $totalBudget > 0 ? ($clientBudget / $totalBudget * 100) : 0 }}%"></div></div>
+
             <div class="d-flex justify-content-between mb-1">
                 <span class="small text-muted">Digital Yug Side</span>
-                <span class="small fw-bold">₹{{ number_format($project->lead->dy_meta_budget ?? 0) }}</span>
+                <span class="small fw-bold">₹{{ number_format($dyBudget) }}</span>
             </div>
-            <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width:{{ $project->lead->total_meta_budget > 0 ? ($project->lead->dy_meta_budget / $project->lead->total_meta_budget * 100) : 0 }}%"></div></div>
+            <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width:{{ $totalBudget > 0 ? ($dyBudget / $totalBudget * 100) : 0 }}%"></div></div>
         </div>
     </div>
 </div>

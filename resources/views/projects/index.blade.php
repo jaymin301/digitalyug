@@ -6,6 +6,9 @@
 @section('content')
 <div class="page-header">
     <h1 class="page-title">Projects <span class="page-subtitle">Track active campaigns and workflow stages</span></h1>
+    @role('Admin|Manager')
+        <a href="{{ route('projects.create') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i>New Project</a>
+    @endrole
 </div>
 
 <div class="panel-card">
@@ -31,7 +34,7 @@
                     "manager" => $p->manager->name ?? "Unassigned",
                     "start_date" => $p->start_date ? $p->start_date->format("d M Y") : "—",
                     "end_date" => $p->end_date ? $p->end_date->format("d M Y") : "—",
-                    "client" => $p->lead->customer_name ?? "N/A"
+                    "client" => $p->customer_name ?: ($p->lead->customer_name ?? "N/A")
                  ]) }}">
                     <td class="details-control">
                         <div class="expand-icon"><i class="fa-solid fa-plus"></i></div>
@@ -41,12 +44,13 @@
                         <div class="fw-bold text-dark">{{ $p->name }}</div>
                         <div class="text-muted small d-none d-md-block">Manager: {{ $p->manager->name ?? 'N/A' }}</div>
                     </td>
-                    <td>{{ $p->lead->customer_name ?? 'N/A' }}</td>
+                    <td>{{ $p->customer_name ?: ($p->lead->customer_name ?? 'N/A') }}</td>
                     <td>{!! $p->stage_badge !!}</td>
                     <td>
                         <div class="action-btns justify-content-end">
                             <a href="{{ route('projects.show', $p) }}" class="btn-action view" title="View Details"><i class="fa-solid fa-eye"></i></a>
                             @role('Admin|Manager')
+                                <a href="{{ route('projects.edit', $p) }}" class="btn-action edit" title="Edit Project"><i class="fa-solid fa-pen-to-square"></i></a>
                                 @if($p->stage === 'pending')
                                     <button class="btn-action approve" onclick="activateProject({{ $p->id }}, '{{ $p->name }}')" title="Activate Project"><i class="fa-solid fa-bolt"></i></button>
                                 @endif
